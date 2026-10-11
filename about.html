@@ -12,6 +12,7 @@
   </div>
   <div class="demo-strip">Demo network: simulated facilities and wait times.</div>
   <div class="sky" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="workspace">
   <header class="topbar">
     <a class="brand" href="index.html">Triage</a>
     <nav class="section-nav" aria-label="Sections of this page">
@@ -33,9 +34,9 @@
   </header>
 
   <main class="about" id="about" tabindex="-1">
-
     <section class="slide" id="top">
       <div class="inner">
+        <div class="window-title" aria-hidden="true"><span>About Triage</span><span class="caption-buttons"><i></i><i></i><i></i></span></div>
         <h1 id="lead">On a simulated busy Saturday at medium urgent-care capacity, people routed by Triage reached treatment sooner.</h1>
         <p class="lede">300 simulated people with minor injuries, noon to 4 PM, played twice with the same people and the
           same other arrivals: once with everyone at their nearest ER, once routed by Triage one person at a time.
@@ -68,7 +69,8 @@
           </div>
         </div>
         <h3>Sources</h3>
-        <table class="data" id="source-table">
+        <div class="table-scroll" tabindex="0" role="region" aria-label="Data table">
+          <table class="data" id="source-table">
           <thead><tr><th class="text">Number</th><th class="text">What it measures</th><th class="text">Source</th></tr></thead>
           <tbody>
             <tr><td class="text">155.4 million</td><td class="text">U.S. emergency department visits, 2022</td>
@@ -83,6 +85,7 @@
               <td class="text"><a href="https://data.cms.gov/provider-data/dataset/isrn-hqyy">CMS Provider Data Catalog, Timely and Effective Care - National</a></td></tr>
           </tbody>
         </table>
+        </div>
         <p class="fine">Checked on 11 Oct 2026. These are the only real-world numbers on this page. Every other number is
           from the simulated network and says so.</p>
       </div>
@@ -147,11 +150,13 @@
               in section 1 before any Triage comparison was run, and never tuned afterwards.</p>
           </div>
         </div>
-        <table class="data" id="param-table">
+        <div class="table-scroll" tabindex="0" role="region" aria-label="Data table">
+          <table class="data" id="param-table">
           <caption>Invented for the demo. Read live from sim.js and the facility list.</caption>
           <thead><tr><th class="text">Setting</th><th>ER</th><th>Urgent care</th><th>Ortho</th><th>Kids'</th></tr></thead>
           <tbody></tbody>
         </table>
+        </div>
       </div>
     </section>
 
@@ -168,7 +173,9 @@
             </ul>
             <div class="chart-box"><canvas id="band-chart" role="img" aria-labelledby="band-title"></canvas></div>
             <details class="table-view"><summary>Show the numbers</summary>
-              <table class="data" id="band-table"><thead><tr><th class="text">Arrive at</th><th>10th</th><th>25th</th><th>Median</th><th>75th</th><th>90th</th></tr></thead><tbody></tbody></table>
+              <div class="table-scroll" tabindex="0" role="region" aria-label="Data table">
+                <table class="data" id="band-table"><thead><tr><th class="text">Arrive at</th><th>10th</th><th>25th</th><th>Median</th><th>75th</th><th>90th</th></tr></thead><tbody></tbody></table>
+              </div>
             </details>
           </div>
           <div>
@@ -200,7 +207,9 @@
             </ul>
             <div class="chart-box"><canvas id="adopt-chart" role="img" aria-labelledby="adopt-title"></canvas></div>
             <details class="table-view"><summary>Show the numbers</summary>
-              <table class="data" id="adopt-table"><thead></thead><tbody></tbody></table>
+              <div class="table-scroll" tabindex="0" role="region" aria-label="Data table">
+                <table class="data" id="adopt-table"><thead></thead><tbody></tbody></table>
+              </div>
             </details>
           </div>
           <div>
@@ -212,7 +221,8 @@
           </div>
         </div>
         <h3>The demo Saturday (seed <span class="demo-seed">17</span>), all three capacities</h3>
-        <table class="data" id="saturday-table">
+        <div class="table-scroll" tabindex="0" role="region" aria-label="Data table">
+          <table class="data" id="saturday-table">
           <thead>
             <tr><th rowspan="2"></th><th colspan="2">Low</th><th colspan="2">Medium</th><th colspan="2">High</th></tr>
             <tr><th>ER</th><th>Triage</th><th>ER</th><th>Triage</th><th>ER</th><th>Triage</th></tr>
@@ -220,6 +230,7 @@
           <tbody></tbody>
           <caption>"ER" = everyone goes to the nearest ER. Same numbers as the Busy Saturday page.</caption>
         </table>
+        </div>
       </div>
     </section>
 
@@ -235,7 +246,9 @@
             </ul>
             <div class="chart-box"><canvas id="herd-chart" role="img" aria-labelledby="herd-title"></canvas></div>
             <details class="table-view"><summary>Show the numbers</summary>
-              <table class="data" id="herd-places"><thead><tr><th class="text">Place</th><th>Triage: sent</th><th>longest wait</th><th>Naive: sent</th><th>longest wait</th></tr></thead><tbody></tbody></table>
+              <div class="table-scroll" tabindex="0" role="region" aria-label="Data table">
+                <table class="data" id="herd-places"><thead><tr><th class="text">Place</th><th>Triage: sent</th><th>longest wait</th><th>Naive: sent</th><th>longest wait</th></tr></thead><tbody></tbody></table>
+              </div>
             </details>
           </div>
           <div>
@@ -246,7 +259,8 @@
               ranking already includes them.</p>
           </div>
         </div>
-        <table class="data" id="herd-table">
+        <div class="table-scroll" tabindex="0" role="region" aria-label="Data table">
+          <table class="data" id="herd-table">
           <thead>
             <tr><th rowspan="2"></th><th colspan="2">Low</th><th colspan="2">Medium</th><th colspan="2">High</th></tr>
             <tr><th>Triage</th><th>Naive</th><th>Triage</th><th>Naive</th><th>Triage</th><th>Naive</th></tr>
@@ -254,6 +268,7 @@
           <tbody></tbody>
           <caption>Demo Saturday (seed <span class="demo-seed">17</span>), all three capacities, whatever they show.</caption>
         </table>
+        </div>
       </div>
     </section>
 
@@ -261,10 +276,12 @@
       <div class="inner">
         <h2><span class="num">7</span>Safety validation</h2>
         <p id="safety-summary" class="readout"></p>
-        <table class="data" id="safety-table">
+        <div class="table-scroll" tabindex="0" role="region" aria-label="Data table">
+          <table class="data" id="safety-table">
           <thead><tr><th>#</th><th class="text">Description</th><th class="text">Checklist answers</th><th class="text">Expected</th><th class="text">Actual</th><th class="text">Result</th></tr></thead>
           <tbody></tbody>
         </table>
+        </div>
         <p class="fine">"Actual" is worked out in this browser, now, by the same router.js the app uses, from the
           checklist answers the person in each case would give (every other item answered no). Whether Gemini
           pre-fills only what each description says is a separate test against the live model
@@ -303,6 +320,7 @@
     </section>
 
   </main>
+  </div>
 
   <script src="https://unpkg.com/chart.js@4.4.1/dist/chart.umd.js"
           integrity="sha384-dug+JxfBvklEQdJ4AYuBBAIScUz0bVN73xpy273gcAwHjb3qI0fXmuYNaNfdyYJG" crossorigin=""></script>

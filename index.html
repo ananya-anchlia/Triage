@@ -14,6 +14,7 @@
   </div>
   <div class="demo-strip">Demo network: simulated facilities and wait times.</div>
   <div class="sky" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="workspace">
   <header class="topbar">
     <h1 class="brand">Triage</h1>
     <nav aria-label="Pages">
@@ -31,6 +32,7 @@
 
     <aside class="panel" id="panel">
 
+      <div class="window-title describe-title" aria-hidden="true"><span>Triage</span></div>
       <section id="describe">
         <label for="description">Describe what happened</label>
         <textarea id="description" rows="4" maxlength="1000"
@@ -46,11 +48,23 @@
         <p id="mic-note" class="note" hidden>The microphone uses your browser's speech-to-text (in Chrome, the
           audio goes to Google). Your words appear in the box above for you to check and edit. Nothing is sent
           until you press "Read my description".</p>
+        <div class="loading-wave" aria-hidden="true">
+          <svg viewBox="0 0 240 48" focusable="false">
+            <defs>
+              <linearGradient id="wave-blue"><stop stop-color="#79e0e2"/><stop offset=".5" stop-color="#148cbb"/><stop offset="1" stop-color="#174c99"/></linearGradient>
+              <filter id="wave-glow" x="-20%" y="-100%" width="140%" height="300%"><feGaussianBlur stdDeviation="2"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            </defs>
+            <path class="wave-line" d="M8 24 C70 -20 170 68 232 24" stroke="url(#wave-blue)"/>
+            <path class="wave-pulse" d="M8 24 C70 -20 170 68 232 24" pathLength="100"/>
+            <g class="wave-bubbles"><circle cx="48" cy="30" r="3"/><circle cx="116" cy="10" r="2"/><circle cx="192" cy="34" r="4"/></g>
+          </svg>
+        </div>
         <button id="read-btn" type="button">Read my description</button>
         <button id="manual-btn" type="button" class="link">Fill in the form myself</button>
       </section>
       <p id="intake-status" class="status" role="status"></p>
 
+      <div class="window-title checklist-title" aria-hidden="true"><span>Safety checklist</span></div>
       <form id="intake-form" novalidate hidden>
         <p class="note">Prototype safety checklist based on published ACEP guidance. Not a validated clinical tool.</p>
         <div id="understood" hidden>
@@ -82,6 +96,7 @@
         <button id="start-over" type="button" class="link">Start over</button>
       </form>
 
+      <div class="window-title results-title" aria-hidden="true"><span>Your options</span></div>
       <div id="result" aria-live="polite"></div>
 
       <p class="panel-links"><a href="saturday.html">Busy Saturday: simulate a whole afternoon</a></p>
@@ -92,6 +107,7 @@
       </p>
     </aside>
   </main>
+  </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
           integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
