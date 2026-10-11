@@ -69,6 +69,38 @@ test("best fit moves ahead only within 15 min of the fastest", () => {
   assert.ok(slow.find((x) => x.facility.id === "B").totalMin - slow[0].totalMin > Router.BEST_FIT_WINDOW_MIN);
 });
 
+test("best-fit window boundary: exactly 15 minutes moves ahead, just over does not", () => {
+  const row = (id, totalMin, bestFit, driveMin = 10) => ({ id, totalMin, driveMin, bestFit });
+  const ids = (rows) => Router.orderRows(rows).map((r) => r.id);
+  assert.equal(Router.BEST_FIT_WINDOW_MIN, 15);
+  assert.deepEqual(ids([row("fast", 100, false), row("fit", 115, true)]), ["fit", "fast"]);
+  assert.deepEqual(ids([row("fast", 100, false), row("fit", 115.01, true)]), ["fast", "fit"]);
+  assert.deepEqual(ids([row("fast", 100, false), row("mid", 105, false), row("fit", 114, true)]), ["fit", "fast", "mid"]);
+  // two best fits inside the window keep their time order; the fastest row is still marked
+  const out = Router.orderRows([row("fast", 100, false), row("fitB", 112, true), row("fitA", 108, true), row("fitC", 130, true)]);
+  assert.deepEqual(out.map((r) => r.id), ["fitA", "fitB", "fast", "fitC"]);
+  assert.deepEqual(out.filter((r) => r.fastest).map((r) => r.id), ["fast"]);
+  for (const r of out) assert.ok([100, 108, 112, 130].includes(r.totalMin), "times are never adjusted");
+});
+
+test("equal totals: the shorter drive goes first", () => {
+  const row = (id, driveMin) => ({ id, totalMin: 60, driveMin, bestFit: false });
+  assert.deepEqual(Router.orderRows([row("far", 25), row("near", 5), row("mid", 12)]).map((r) => r.id), ["near", "mid", "far"]);
+  assert.deepEqual(Router.orderRows([row("near", 5), row("mid", 12), row("far", 25)]).map((r) => r.id), ["near", "mid", "far"]);
+});
+
+test("facility labels are neutral: no real hospital or clinic names", () => {
+  const REAL = /duke|unc\b|wakemed|rex\b|novant|atrium|cone health|vidant|ecu health|fastmed|nextcare|medfirst|emergeortho|raleigh ortho|triangle ortho|carolina|cape fear|mission|johnston|maria parham|minuteclinic|cvs|walgreens|concentra|va\b|veterans|st\.|saint|memorial|regional|university|children's/i;
+  const NEUTRAL = /^(Hospital [A-Z] ER|Urgent Care \d+|Ortho Walk-in [A-Z]|Kids Urgent Care [A-Z])$/;
+  assert.equal(facilities.length, 12);
+  for (const f of facilities) {
+    assert.ok(NEUTRAL.test(f.label), `"${f.label}" is not a neutral label`);
+    assert.ok(!REAL.test(f.label), `"${f.label}" looks like a real name`);
+    assert.ok(!REAL.test(f.id), `id ${f.id} looks like a real name`);
+  }
+  assert.equal(new Set(facilities.map((f) => f.label)).size, facilities.length);
+});
+
 test("any single yes means emergency, for every item of every type", () => {
   for (const type of Object.keys(checklists.types)) {
     for (const id of checklists.types[type]) {
@@ -86,9 +118,92 @@ test("any single not_sure means emergency and names the item", () => {
   assert.equal(r.triggered[0].text, checklists.items.leg_numb);
 });
 
-test("a yes is an emergency even when other items are still blank", () => {
-  const r = Router.route({ ...base, injuryType: "cut", age: 30, answers: { bleeding: "yes" } });
+test("a yes or not_sure is an emergency even when every other item is still blank, for every item of every type", () => {
+  for (const type of Object.keys(checklists.types)) {
+    for (const id of checklists.types[type]) {
+      for (const a of ["yes", "not_sure"]) {
+        const r = Router.route({ ...base, injuryType: type, age: type === "child_minor_injury" ? 7 : 30, answers: { [id]: a } });
+        assert.equal(r.kind, "emergency", `${type}/${id}/${a}`);
+        assert.deepEqual(r.triggered, [{ id, text: checklists.items[id], answer: a }]);
+      }
+    }
+  }
+});
+
+test("any single not_sure means emergency, for every item of every type", () => {
+  for (const type of Object.keys(checklists.types)) {
+    for (const id of checklists.types[type]) {
+      const r = Router.route({ ...base, injuryType: type, age: type === "child_minor_injury" ? 7 : 30, answers: { ...allNo(type), [id]: "not_sure" } });
+      assert.equal(r.kind, "emergency", `${type}/${id}`);
+      assert.deepEqual(r.triggered.map((t) => t.id), [id]);
+    }
+  }
+});
+
+test("every triggered item is named, in checklist order", () => {
+  const r = Router.route({ ...base, injuryType: "sprain_or_simple_fracture", age: 30, answers: { ...allNo("sprain_or_simple_fracture"), cold: "not_sure", numb: "yes", thinners: "yes" } });
   assert.equal(r.kind, "emergency");
+  assert.deepEqual(r.triggered.map((t) => [t.id, t.answer]), [["numb", "yes"], ["cold", "not_sure"], ["thinners", "yes"]]);
+  for (const t of r.triggered) assert.equal(t.text, checklists.items[t.id]);
+});
+
+test("a warning sign beats the age check: blank, invalid and infant ages still get the emergency screen", () => {
+  for (const age of [undefined, null, NaN, "", "abc", -1, 130, Infinity, 0, 0.5]) {
+    for (const a of ["yes", "not_sure"]) {
+      const r = Router.route({ ...base, injuryType: "cut", age, answers: { ...allNo("cut"), bleeding: a } });
+      assert.equal(r.kind, "emergency", `${String(age)}/${a}`);
+      assert.deepEqual(r.triggered.map((t) => t.id), ["bleeding"]);
+      assert.equal(r.nearestER.facility.id, "ER_RAL");
+    }
+  }
+  const adult = Router.route({ ...base, injuryType: "child_minor_injury", age: 30, answers: { sleepy: "yes" } });
+  assert.equal(adult.kind, "emergency");
+});
+
+test("a yes or not_sure on ANY checklist item is an emergency, whatever the injury type", () => {
+  const all = Object.keys(checklists.items);
+  for (const type of [...Object.keys(checklists.types), "other", "chest_pain", undefined]) {
+    const own = checklists.types[type] ? allNo(type) : {};
+    for (const id of all) {
+      for (const a of ["yes", "not_sure"]) {
+        for (const age of [7, 30, undefined]) {
+          const r = Router.route({ ...base, injuryType: type, age, answers: { ...own, [id]: a } });
+          assert.equal(r.kind, "emergency", `${String(type)}/${id}/${a}/${age}`);
+          assert.deepEqual(r.triggered, [{ id, text: checklists.items[id], answer: a }]);
+        }
+      }
+    }
+  }
+  // the grandpa case: no specific injury type, on blood thinners
+  const grandpa = Router.route({ ...base, injuryType: "other", age: 70, answers: { thinners: "yes" } });
+  assert.equal(grandpa.kind, "emergency");
+  assert.equal(grandpa.triggered[0].text, checklists.items.thinners);
+});
+
+test("items outside the type's list are not required, and a 'no' on one changes nothing", () => {
+  const r = Router.route({ ...base, injuryType: "cut", age: 30, answers: { ...allNo("cut"), thinners: "no", burn_face: "unknown" } });
+  assert.equal(r.kind, "results");
+  const blank = Router.route({ ...base, injuryType: "cut", age: 30, answers: { thinners: "no" } });
+  assert.deepEqual(blank.missing.map((m) => m.id), checklists.types.cut);
+});
+
+test("the emergency is returned without simulation data: nearestER is null, nothing throws", () => {
+  const answers = { ...allNo("cut"), bleeding: "yes" };
+  const broken = [
+    { state: undefined }, { state: null }, { user: undefined }, { user: null }, { user: {} },
+    { user: { lat: "x", lng: NaN } }, { facilities: undefined }, { facilities: null }, { facilities: {} },
+    { facilities: undefined, state: undefined, user: undefined },
+  ];
+  for (const b of broken) {
+    const r = Router.route({ ...base, ...b, injuryType: "cut", age: 30, answers });
+    assert.equal(r.kind, "emergency", JSON.stringify(b));
+    assert.deepEqual(r.triggered.map((t) => t.id), ["bleeding"]);
+    if (!("state" in b) || Object.keys(b).length > 1) assert.equal(r.nearestER, null, JSON.stringify(b));
+  }
+  // no clock, but facilities and a location: still names the nearest ER
+  assert.equal(Router.route({ ...base, state: undefined, injuryType: "cut", age: 30, answers }).nearestER.facility.id, "ER_RAL");
+  assert.equal(Router.route({ ...base, facilities: [], injuryType: "cut", age: 30, answers }).nearestER, null);
+  assert.equal(Router.route({ injuryType: "cut", checklists, answers }).kind, "emergency");
 });
 
 test("blank, unknown or garbage answers never route", () => {
@@ -108,6 +223,28 @@ test("emergency goes to the nearest ER, not the one with the shortest wait", () 
   // moving the user next to Hospital C ER flips the nearest ER; wait times play no part
   const r2 = Router.route({ ...base, user: { lat: 35.905, lng: -79.05 }, injuryType: "cut", age: 30, answers: { bleeding: "yes" } });
   assert.equal(r2.nearestER.facility.id, "ER_CH");
+});
+
+test("emergency goes to an ER even when another kind of facility is nearer", () => {
+  const ortho = facilities.find((f) => f.id === "ORTHO_RAL");
+  const at = { lat: ortho.lat, lng: ortho.lng };
+  const nearestAny = [...facilities].sort((a, b) => Sim.driveMinutes(at, a) - Sim.driveMinutes(at, b))[0];
+  assert.notEqual(nearestAny.type, "er", "test premise: the nearest pin is not an ER");
+  const r = Router.route({ ...base, user: at, injuryType: "cut", age: 30, answers: { bleeding: "yes" } });
+  assert.equal(r.nearestER.facility.type, "er");
+  const nearestEr = facilities.filter((f) => f.type === "er").sort((a, b) => Sim.driveMinutes(at, a) - Sim.driveMinutes(at, b))[0];
+  assert.equal(r.nearestER.facility.id, nearestEr.id);
+  for (const f of facilities) assert.equal(Router.nearestER([f], at, 960) !== null, f.type === "er", f.id);
+});
+
+test("emergency ignores wait time: a near ER with a long line beats a far ER with no line", () => {
+  const er = (id, lat, lng) => ({ id, label: id, type: "er", lat, lng, hours: "00:00-24:00", xray: true, specialists: [], slots: 5, min_age: 0, max_age: null, treats: ["cut"] });
+  const f = [er("FAR", 35.86, -78.68), er("NEAR", 35.79, -78.68)];
+  const st = Sim.makeState(960, { NEAR: { waiting: 30, inTreatment: 5 }, FAR: { waiting: 0, inTreatment: 0 } });
+  const total = (x) => { const d = Sim.driveMinutes(demo.user, x); return d + Sim.estimateWait(x, st, d).median; };
+  assert.ok(total(f[0]) + 60 < total(f[1]), `test premise: FAR is faster overall (${total(f[0])} vs ${total(f[1])})`);
+  const r = Router.route({ ...base, facilities: f, state: st, injuryType: "cut", age: 30, answers: { bleeding: "yes" } });
+  assert.equal(r.nearestER.facility.id, "NEAR");
 });
 
 test("ambulance questions: yes or not_sure to any switches the headline to Call 911", () => {
@@ -148,23 +285,37 @@ test("injury outside the types returns 'other', never a guess", () => {
   assert.equal(Router.route({ ...base, injuryType: "chest_pain", age: 30, answers: {} }).kind, "other");
 });
 
-test("child picks 'something else': child_minor_injury checklist, kids' clinic best fit", () => {
-  const none = Router.route({ ...base, injuryType: "other", age: 7, answers: {} });
+test("'something else' is the nurse-line screen at every age, with or without an age", () => {
+  for (const age of [3, 7, 17, 17.5, 18, 30, undefined, NaN, 130]) {
+    assert.equal(Router.route({ ...base, injuryType: "other", age, answers: {} }).kind, "other", String(age));
+    assert.equal(Router.route({ ...base, injuryType: "other", age, answers: allNo("child_minor_injury") }).kind, "other", String(age));
+  }
+});
+
+test("any type outside the list is 'other' for a child too, never the child checklist", () => {
+  for (const type of ["chest_pain", "fever", "", undefined, "constructor", "__proto__", "toString"]) {
+    for (const age of [7, 30]) {
+      const r = Router.route({ ...base, injuryType: type, age, answers: allNo("child_minor_injury") });
+      assert.equal(r.kind, "other", `${String(type)}/${age}`);
+    }
+  }
+});
+
+test("child_minor_injury: its own checklist for a child, kids' clinic best fit; 'other' for an adult", () => {
+  const none = Router.route({ ...base, injuryType: "child_minor_injury", age: 7, answers: {} });
   assert.equal(none.kind, "incomplete");
   assert.deepEqual(none.missing.map((m) => m.id), checklists.types.child_minor_injury);
-  const r = Router.route({ ...base, injuryType: "other", age: 7, answers: allNo("child_minor_injury") });
+  const r = Router.route({ ...base, injuryType: "child_minor_injury", age: 7, answers: allNo("child_minor_injury") });
   assert.equal(r.kind, "results");
   assert.equal(r.injuryType, "child_minor_injury");
   assert.ok(r.ranked.every((x) => x.facility.treats.includes("child_minor_injury")));
   assert.ok(r.ranked.some((x) => x.bestFit && x.facility.type === "peds"));
-  const em = Router.route({ ...base, injuryType: "other", age: 7, answers: { ...allNo("child_minor_injury"), sleepy: "yes" } });
+  const em = Router.route({ ...base, injuryType: "child_minor_injury", age: 7, answers: { ...allNo("child_minor_injury"), sleepy: "yes" } });
   assert.equal(em.kind, "emergency");
   assert.equal(em.triggered[0].id, "sleepy");
-});
-
-test("adult picks 'something else': ER or nurse line", () => {
-  assert.equal(Router.route({ ...base, injuryType: "other", age: 30, answers: {} }).kind, "other");
-  assert.equal(Router.route({ ...base, injuryType: "other", age: 18, answers: {} }).kind, "other");
+  for (const age of [18, 30]) {
+    assert.equal(Router.route({ ...base, injuryType: "child_minor_injury", age, answers: allNo("child_minor_injury") }).kind, "other");
+  }
 });
 
 test("child with a wrist injury: sprain/fracture checklist plus child flag", () => {
@@ -180,22 +331,24 @@ test("child with a wrist injury: sprain/fracture checklist plus child flag", () 
   assert.ok(!adult.ranked.some((x) => x.facility.type === "peds"));
 });
 
-test("child flag is age under 18: ages 7, 17 and 18", () => {
+test("child flag is age under 18: ages 7, 17, 17.5, 17.99 and 18", () => {
   const wrist = (age) => Router.route({ ...base, injuryType: "sprain_or_simple_fracture", age, answers: allNo("sprain_or_simple_fracture") });
   const hasKids = (r) => r.ranked.some((x) => x.facility.type === "peds" && x.bestFit);
-  assert.ok(hasKids(wrist(7)));
-  assert.ok(hasKids(wrist(17)));
+  for (const age of [7, 17, 17.5, 17.99]) {
+    assert.ok(Router.isChild(age), `isChild ${age}`);
+    assert.ok(hasKids(wrist(age)), `kids' clinics at ${age}`);
+  }
+  assert.ok(!Router.isChild(18));
   assert.ok(!wrist(18).ranked.some((x) => x.facility.type === "peds"));
-  const other = (age) => Router.route({ ...base, injuryType: "other", age, answers: allNo("child_minor_injury") });
-  assert.equal(other(7).injuryType, "child_minor_injury");
-  assert.equal(other(17).injuryType, "child_minor_injury");
-  assert.equal(other(18).kind, "other");
+  const unspecified = (age) => Router.route({ ...base, injuryType: "child_minor_injury", age, answers: allNo("child_minor_injury") });
+  assert.equal(unspecified(17.5).kind, "results");
+  assert.equal(unspecified(18).kind, "other");
 });
 
 test("age is required: blank, negative, non-numeric or absurd ages never route", () => {
-  for (const type of ["cut", "other", "sprain_or_simple_fracture"]) {
+  for (const type of ["cut", "child_minor_injury", "sprain_or_simple_fracture"]) {
     for (const age of [undefined, null, NaN, "", "7", "abc", -1, -0.5, Infinity, 121]) {
-      const r = Router.route({ ...base, injuryType: type, age, answers: allNo(type === "other" ? "child_minor_injury" : type) });
+      const r = Router.route({ ...base, injuryType: type, age, answers: allNo(type) });
       assert.equal(r.kind, "incomplete", `${type}/${String(age)}`);
       assert.equal(r.reason, "age");
     }
@@ -209,7 +362,6 @@ test("age rules: adults never see kids' clinics; ortho excludes under-5", () => 
   const toddler = Router.route({ ...base, injuryType: "sprain_or_simple_fracture", age: 3, answers: allNo("sprain_or_simple_fracture") });
   assert.ok(!toddler.ranked.some((x) => x.facility.type === "ortho"));
   assert.ok(toddler.ranked.some((x) => x.facility.type === "peds"));
-  assert.equal(Router.route({ ...base, injuryType: "child_minor_injury", age: 30, answers: allNo("child_minor_injury") }).kind, "incomplete");
 });
 
 test("closed facilities are left out", () => {

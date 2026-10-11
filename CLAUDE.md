@@ -12,6 +12,12 @@ Work on ONE milestone per session. Do not touch files or features outside it.
 - Plain HTML, CSS and JavaScript. No React, no bundler, no build step.
 - Leaflet 1.9.4 from a CDN for the map. Chart.js from a CDN for About-page charts.
 - One Vercel serverless function, `api/intake.js`, calls Gemini. Local dev: `vercel dev`.
+- `POST /api/intake` with `{ "text": "..." }` returns
+  `{ injury_type, age_years, body_part, answers }` or `{ "error": "..." }`.
+  `answers` has one value per item in data/checklists.json: "yes", "no" or "unknown".
+  The server validates Gemini's reply: any missing item, unknown key or other value becomes
+  "unknown". The whole intake has an 8-second limit; on any error, junk reply or timeout the app
+  shows the plain hand-filled form.
 - `GEMINI_API_KEY` lives only in `.env` (gitignored) and Vercel environment variables.
   Never put it in browser code, never commit it, never print it.
 
@@ -48,9 +54,13 @@ tests/run.html           runs router + safety tests in the browser
 6. Always visible: an "Emergency? Call 911" bar and "Demo network: simulated facilities and
    wait times." Facility names stay neutral (e.g. "Hospital A ER"), never real hospital names.
 7. Anything outside the four injury types (sprain_or_simple_fracture, cut, minor_burn,
-   back_strain) → "ER or your doctor's nurse line", never a guess. Children are not a separate
-   type: age sets the child flag (under 18), which filters facilities by age and makes kids'
-   clinics "Best fit". `child_minor_injury` is used only for a child with no specified injury.
+   back_strain) → "ER or your doctor's nurse line", never a guess. "other" goes to the
+   nurse-line screen at every age, child or adult, after the checklist check (a yes or not sure
+   on any item is still an emergency). In the hand-filled form, "Something else" is "other".
+   Children are not a separate type: age sets the child flag (under 18), which filters
+   facilities by age and makes kids' clinics "Best fit". `child_minor_injury` is returned only
+   by Gemini, and only when a child's injury is described without a specific type; anything
+   that isn't an injury is "other". An adult with `child_minor_injury` gets the nurse-line screen.
 
 ## Simulation rules
 
