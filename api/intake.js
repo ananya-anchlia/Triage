@@ -213,6 +213,11 @@ export default async function handler(req, res) {
   } catch (err) {
     const code = err instanceof IntakeError ? err.code : "server_error";
     console.error(`Intake failed (${code}):`, err instanceof IntakeError ? err.message : safeMessage(err));
+    if (code === "no_key") {
+      // Names only, never values: shows a misspelled or differently named variable in the Vercel log.
+      const names = Object.keys(process.env).filter((n) => /gemini|google|api_?key/i.test(n));
+      console.error(`Environment: ${process.env.VERCEL_ENV ?? "not Vercel"}. Similar variable names set: ${JSON.stringify(names)}`);
+    }
     return res.status(502).json({ error: "Could not read the description.", code });
   }
 }
