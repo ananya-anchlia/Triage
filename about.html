@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Triage: About</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="emergency-bar">
+    <span>Emergency? <a href="tel:911">Call 911</a></span>
+  </div>
+  <div class="demo-strip">Demo network: simulated facilities and wait times.</div>
+  <div class="sky" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+  <header class="topbar">
+    <a class="brand" href="index.html">Triage</a>
+    <nav class="section-nav" aria-label="Sections of this page">
+      <a href="#top">Result</a>
+      <a href="#s1">1 Problem</a>
+      <a href="#s2">2 Decides</a>
+      <a href="#s3">3 Model</a>
+      <a href="#s4">4 Ranges</a>
+      <a href="#s5">5 Adoption</a>
+      <a href="#s6">6 Herding</a>
+      <a href="#s7">7 Safety</a>
+      <a href="#s8">8 Limits</a>
+    </nav>
+    <nav aria-label="Pages">
+      <a href="index.html">Find care</a>
+      <a href="saturday.html">Busy Saturday</a>
+      <a href="about.html" aria-current="page">About</a>
+    </nav>
+  </header>
+
+  <main class="about" id="about" tabindex="-1">
+
+    <section class="slide" id="top">
+      <div class="inner">
+        <h1 id="lead">On a simulated busy Saturday at medium urgent-care capacity, people routed by Triage reached treatment sooner.</h1>
+        <p class="lede">300 simulated people with minor injuries, noon to 4 PM, played twice with the same people and the
+          same other arrivals: once with everyone at their nearest ER, once routed by Triage one person at a time.
+          <span class="sim-label">simulated network</span></p>
+        <div class="scalebars" id="hero-bars" role="img" aria-label="Average times on the simulated Saturday, drawn to scale"></div>
+        <p id="hero-spread" class="fine"></p>
+        <p>Triage is a working prototype, shown on hypothetical cases in a simulated Triangle network. It tells you
+          where a non-emergency injury can be treated and how long the simulated wait is, and it sends you to the ER
+          or 911 at the first warning sign.</p>
+      </div>
+    </section>
+
+    <section class="slide" id="s1">
+      <div class="inner">
+        <h2><span class="num">1</span>The problem</h2>
+        <p class="lede">Emergency rooms are where most people take an injury, and a visit takes hours.</p>
+        <div class="facts">
+          <div>
+            <b>155.4 million</b>
+            <p>emergency department visits in the U.S. in 2022. 43.5 million of them were injury-related.</p>
+          </div>
+          <div>
+            <b>40.6%</b>
+            <p>of those visits had the patient seen in fewer than 15 minutes. The rest waited longer.</p>
+          </div>
+          <div>
+            <b>187 min</b>
+            <p>median time a patient who is sent home spends in a North Carolina emergency department. The national
+              median is 162 min.</p>
+          </div>
+        </div>
+        <h3>Sources</h3>
+        <table class="data" id="source-table">
+          <thead><tr><th class="text">Number</th><th class="text">What it measures</th><th class="text">Source</th></tr></thead>
+          <tbody>
+            <tr><td class="text">155.4 million</td><td class="text">U.S. emergency department visits, 2022</td>
+              <td class="text"><a href="https://www.cdc.gov/nchs/fastats/emergency-department.htm">CDC National Center for Health Statistics, FastStats: Emergency Department Visits</a> (National Hospital Ambulatory Medical Care Survey, 2022 National Summary Tables)</td></tr>
+            <tr><td class="text">43.5 million</td><td class="text">Injury-related visits among them (includes poisoning and adverse effects), 2022</td>
+              <td class="text"><a href="https://www.cdc.gov/nchs/fastats/emergency-department.htm">CDC National Center for Health Statistics, FastStats: Emergency Department Visits</a> (same survey)</td></tr>
+            <tr><td class="text">40.6%</td><td class="text">Visits with the patient seen in fewer than 15 minutes, 2022</td>
+              <td class="text"><a href="https://www.cdc.gov/nchs/fastats/emergency-department.htm">CDC National Center for Health Statistics, FastStats: Emergency Department Visits</a> (same survey)</td></tr>
+            <tr><td class="text">187 min</td><td class="text">North Carolina: median time in the emergency department before leaving, excluding transfers and psychiatric patients (measure OP-18b), Oct 2024 to Sep 2025</td>
+              <td class="text"><a href="https://data.cms.gov/provider-data/dataset/apyc-v239">CMS Provider Data Catalog, Timely and Effective Care - State</a></td></tr>
+            <tr><td class="text">162 min</td><td class="text">United States: the same measure and period</td>
+              <td class="text"><a href="https://data.cms.gov/provider-data/dataset/isrn-hqyy">CMS Provider Data Catalog, Timely and Effective Care - National</a></td></tr>
+          </tbody>
+        </table>
+        <p class="fine">Checked on 11 Oct 2026. These are the only real-world numbers on this page. Every other number is
+          from the simulated network and says so.</p>
+      </div>
+    </section>
+
+    <section class="slide" id="s2">
+      <div class="inner">
+        <h2><span class="num">2</span>How Triage decides</h2>
+        <p class="lede">Three separate jobs. Gemini only fills in a form. A fixed checklist catches emergencies. The
+          router ranks places only after that.</p>
+        <div class="flow">
+          <div class="flow-row">
+            <div class="step"><b>You describe it</b>Talk or type for 30 seconds.</div>
+            <div class="arrow" aria-hidden="true">&rsaquo;</div>
+            <div class="step"><b>Gemini pre-fills</b>Only what you said. Anything else stays blank. It decides nothing.</div>
+            <div class="arrow" aria-hidden="true">&rsaquo;</div>
+            <div class="step"><b>You answer every item</b>Yes, no or not sure, for each warning sign.</div>
+            <div class="arrow" aria-hidden="true">&rsaquo;</div>
+            <div class="step fixed"><b>Fixed checklist decides</b>Plain code in router.js matching a pre-set list based on ACEP warning signs.</div>
+          </div>
+          <div class="branch">
+            <div class="when">Any yes or not sure</div>
+            <div class="step er"><b>Go to the nearest ER now, or Call 911</b>The screen names the item that triggered it.
+              Always the nearest ER, never ranked by wait.</div>
+            <div class="when">Outside the four injury types</div>
+            <div class="step nurse"><b>ER or your doctor's nurse line</b>Never a guess.</div>
+            <div class="when">Every item no</div>
+            <div class="flow-row">
+              <div class="step"><b>Rank places</b>Open, treats this injury, serves this age. Total = approx. drive + median simulated wait.</div>
+              <div class="arrow" aria-hidden="true">&rsaquo;</div>
+              <div class="step"><b>You pick one</b>Top three, with wait ranges and reasons.</div>
+              <div class="arrow" aria-hidden="true">&rsaquo;</div>
+              <div class="step loop"><b>You join that line</b>At your arrival time. The next person's ranking sees it.</div>
+            </div>
+          </div>
+        </div>
+        <p class="fine">The results screen always says: "These places can treat this type of injury. A clear checklist
+          doesn't rule out a serious injury, so if anything gets worse or seems wrong, go to the ER or call 911."</p>
+      </div>
+    </section>
+
+    <section class="slide" id="s3">
+      <div class="inner">
+        <h2><span class="num">3</span>The queue model</h2>
+        <div class="cols">
+          <div>
+            <ul>
+              <li><strong>Arrivals.</strong> People walk in at random (Poisson), at a rate that depends on the kind of
+                place and the hour: quiet overnight, busiest in the evening.</li>
+              <li><strong>Treatment slots.</strong> Each place has a fixed number of rooms with staff. A free slot takes
+                the next person in line. Treatment times are random around an average.</li>
+              <li><strong>Lines.</strong> People in treatment are tracked apart from people waiting.</li>
+              <li><strong>Emergencies first.</strong> ERs also get emergencies. They go to the front of the line but
+                never interrupt someone already being treated.</li>
+              <li><strong>Your wait starts when you arrive,</strong> after the drive, not when you press the button.</li>
+            </ul>
+          </div>
+          <div>
+            <p>The method is real; the numbers are not. They were written down once in sim.js with the
+              reason beside each. The two ER arrival rates were lowered once from the first plan, because the first
+              values gave ERs about three times more work than they could do. They were re-set against the CMS figure
+              in section 1 before any Triage comparison was run, and never tuned afterwards.</p>
+          </div>
+        </div>
+        <table class="data" id="param-table">
+          <caption>Invented for the demo. Read live from sim.js and the facility list.</caption>
+          <thead><tr><th class="text">Setting</th><th>ER</th><th>Urgent care</th><th>Ortho</th><th>Kids'</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="slide" id="s4">
+      <div class="inner">
+        <h2><span class="num">4</span>Wait ranges <span class="sim-label">simulated wait range</span></h2>
+        <div class="cols">
+          <div>
+            <h3 id="band-title">Simulated wait by arrival time</h3>
+            <ul class="legend" aria-hidden="true">
+              <li><i style="--c: var(--series-1)"></i>Median run</li>
+              <li><i class="band" style="--c: var(--series-1); opacity: 0.45"></i>Middle half of runs (25th to 75th percentile)</li>
+              <li><i class="band" style="--c: var(--series-1); opacity: 0.18"></i>10th to 90th percentile</li>
+            </ul>
+            <div class="chart-box"><canvas id="band-chart" role="img" aria-labelledby="band-title"></canvas></div>
+            <details class="table-view"><summary>Show the numbers</summary>
+              <table class="data" id="band-table"><thead><tr><th class="text">Arrive at</th><th>10th</th><th>25th</th><th>Median</th><th>75th</th><th>90th</th></tr></thead><tbody></tbody></table>
+            </details>
+          </div>
+          <div>
+            <p class="readout" id="band-readout"></p>
+            <p>The app never shows one number. From the lines as they are now, it plays the next three hours
+              <span id="band-runs">200</span> times with different random arrivals and treatment times, and shows the
+              middle half of the results, rounded to 5 minutes.</p>
+            <p>The range describes uncertainty inside the model. It is not a prediction for any real hospital.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="s5">
+      <div class="inner">
+        <h2><span class="num">5</span>The adoption curve <span class="sim-label">simulated network</span></h2>
+        <div class="cols">
+          <div>
+            <h3 id="adopt-title">Average wait, by the share of the 300 who use Triage</h3>
+            <div class="seg" id="adopt-capacity" role="group" aria-label="Urgent-care capacity">
+              <button type="button" data-scenario="low" aria-pressed="false">Low capacity</button>
+              <button type="button" data-scenario="medium" aria-pressed="true">Medium</button>
+              <button type="button" data-scenario="high" aria-pressed="false">High</button>
+            </div>
+            <ul class="legend" aria-hidden="true">
+              <li><i style="--c: var(--series-1)"></i>Average ER wait (non-emergency patients)</li>
+              <li><i style="--c: var(--series-2)"></i>Average wait, the clinics' other patients</li>
+              <li><i class="band" style="--c: #8497a3"></i>Middle 80% of <span class="seed-count">50</span> simulated Saturdays</li>
+            </ul>
+            <div class="chart-box"><canvas id="adopt-chart" role="img" aria-labelledby="adopt-title"></canvas></div>
+            <details class="table-view"><summary>Show the numbers</summary>
+              <table class="data" id="adopt-table"><thead></thead><tbody></tbody></table>
+            </details>
+          </div>
+          <div>
+            <p class="readout" id="adopt-readout"></p>
+            <p>People who don't use Triage go to their nearest ER. Someone who uses it at 10% still uses it at 25%,
+              so each step only adds users.</p>
+            <p><strong>The cost is real.</strong> Every person routed to a clinic makes that clinic's line longer for
+              the people who were already going there. The orange line is their wait.</p>
+          </div>
+        </div>
+        <h3>The demo Saturday (seed <span class="demo-seed">17</span>), all three capacities</h3>
+        <table class="data" id="saturday-table">
+          <thead>
+            <tr><th rowspan="2"></th><th colspan="2">Low</th><th colspan="2">Medium</th><th colspan="2">High</th></tr>
+            <tr><th>ER</th><th>Triage</th><th>ER</th><th>Triage</th><th>ER</th><th>Triage</th></tr>
+          </thead>
+          <tbody></tbody>
+          <caption>"ER" = everyone goes to the nearest ER. Same numbers as the Busy Saturday page.</caption>
+        </table>
+      </div>
+    </section>
+
+    <section class="slide" id="s6">
+      <div class="inner">
+        <h2><span class="num">6</span>The herding test <span class="sim-label">simulated network</span></h2>
+        <div class="cols">
+          <div>
+            <h3 id="herd-title">Where the 300 were sent, medium capacity</h3>
+            <ul class="legend" aria-hidden="true">
+              <li><i class="block" style="--c: var(--series-1)"></i>Triage: one person at a time, lines updated after every pick</li>
+              <li><i class="block" style="--c: var(--series-2)"></i>Naive: same ranking, but it only ever sees the noon lines</li>
+            </ul>
+            <div class="chart-box"><canvas id="herd-chart" role="img" aria-labelledby="herd-title"></canvas></div>
+            <details class="table-view"><summary>Show the numbers</summary>
+              <table class="data" id="herd-places"><thead><tr><th class="text">Place</th><th>Triage: sent</th><th>longest wait</th><th>Naive: sent</th><th>longest wait</th></tr></thead><tbody></tbody></table>
+            </details>
+          </div>
+          <div>
+            <p class="readout" id="herd-readout"></p>
+            <p>"Won't everyone flood the quiet clinic?" The naive router is the same ranking code with the feedback
+              switched off: it never sees a line change and never counts the people it has already sent.</p>
+            <p>Triage adds each person who picks a place to that line at their arrival time, so the next person's
+              ranking already includes them.</p>
+          </div>
+        </div>
+        <table class="data" id="herd-table">
+          <thead>
+            <tr><th rowspan="2"></th><th colspan="2">Low</th><th colspan="2">Medium</th><th colspan="2">High</th></tr>
+            <tr><th>Triage</th><th>Naive</th><th>Triage</th><th>Naive</th><th>Triage</th><th>Naive</th></tr>
+          </thead>
+          <tbody></tbody>
+          <caption>Demo Saturday (seed <span class="demo-seed">17</span>), all three capacities, whatever they show.</caption>
+        </table>
+      </div>
+    </section>
+
+    <section class="slide" id="s7">
+      <div class="inner">
+        <h2><span class="num">7</span>Safety validation</h2>
+        <p id="safety-summary" class="readout"></p>
+        <table class="data" id="safety-table">
+          <thead><tr><th>#</th><th class="text">Description</th><th class="text">Checklist answers</th><th class="text">Expected</th><th class="text">Actual</th><th class="text">Result</th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <p class="fine">"Actual" is worked out in this browser, now, by the same router.js the app uses, from the
+          checklist answers the person in each case would give (every other item answered no). Whether Gemini
+          pre-fills only what each description says is a separate test against the live model
+          (tests/run-safety.js); a wrong pre-fill fails the case there. These test prototype guardrails. They are
+          not clinical validation.</p>
+      </div>
+    </section>
+
+    <section class="slide" id="s8">
+      <div class="inner">
+        <h2><span class="num">8</span>Limitations and next steps</h2>
+        <div class="cols even">
+          <ul>
+            <li><strong>The hospital feed is simulated.</strong> The 12 facilities, their lines and every wait are
+              invented. With real feeds the same code would run on real lines.</li>
+            <li><strong>The parameters are invented.</strong> Arrival rates, treatment times and slots are plausible
+              guesses. Real data would replace every one of them, and could change the results on this page.</li>
+            <li><strong>Drive times are approximate.</strong> Straight-line distance &times; 1.3 at 40 km/h. No roads,
+              no traffic, no transit.</li>
+            <li><strong>The simulated Saturday is harsh on ERs.</strong> Nobody gives up and leaves a line, and all
+              300 extra people arrive in four hours. That is why the nearest-ER waits run to many hours.</li>
+          </ul>
+          <ul>
+            <li><strong>The checklist is a prototype guardrail.</strong> It is based on published ACEP warning signs
+              and has not been reviewed by a clinician. It needs clinical validation before real patients rely on it.
+              A clear checklist doesn't rule out a serious injury.</li>
+            <li><strong>Routing moves the wait, it doesn't remove it.</strong> Clinics' other patients wait longer,
+              and some people are treated after closing time. Section 5 shows both.</li>
+            <li><strong>Picks stay on this laptop.</strong> A pick changes only the simulation in this browser. A real
+              network would keep the shared lines on a server.</li>
+            <li><strong>Next:</strong> one real wait-time feed beside the simulated ones, real drive times, transit
+              and rideshare, cost and insurance.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="https://unpkg.com/chart.js@4.4.1/dist/chart.umd.js"
+          integrity="sha384-dug+JxfBvklEQdJ4AYuBBAIScUz0bVN73xpy273gcAwHjb3qI0fXmuYNaNfdyYJG" crossorigin=""></script>
+  <script src="sim.js"></script>
+  <script src="router.js"></script>
+  <script src="saturday.js"></script>
+  <script src="about-sim.js"></script>
+  <script src="about-app.js"></script>
+</body>
+</html>

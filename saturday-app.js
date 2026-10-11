@@ -23,6 +23,33 @@ function duration(min) {
 
 const selected = () => document.querySelector("input[name=scenario]:checked").value;
 
+// A share in plain words, only when the number really is close to that fraction.
+function fractionWords(x) {
+  for (const [value, words] of [[1 / 4, "about a quarter"], [1 / 3, "about a third"], [1 / 2, "about half"]]) {
+    if (Math.abs(x - value) <= 0.04) return words;
+  }
+  return `${Math.round(x * 100)}%`;
+}
+
+// The result in one sentence, with what it cost the clinics' other patients right beside it.
+function renderHeadline(r) {
+  const { baseline: b, triage: t } = r;
+  const box = $("headline");
+  if (t.avgTimeToTreatment < b.avgTimeToTreatment) {
+    box.replaceChildren(
+      `At ${r.scenario} urgent-care capacity, the 300 routed by Triage reached treatment in `,
+      el("strong", {}, `${fractionWords(t.avgTimeToTreatment / b.avgTimeToTreatment)} of the time`),
+      `: ${duration(t.avgTimeToTreatment)} on average instead of ${duration(b.avgTimeToTreatment)}.`);
+  } else {
+    box.replaceChildren(`At ${r.scenario} urgent-care capacity, the 300 routed by Triage did not reach treatment sooner: ${duration(t.avgTimeToTreatment)} ` +
+      `on average, against ${duration(b.avgTimeToTreatment)} at the nearest ER.`);
+  }
+  const more = t.avgOtherClinicWait > b.avgOtherClinicWait;
+  box.append(el("span", { className: "cost" },
+    `The clinics' other patients waited ${more ? "longer" : "no longer"}: ${duration(t.avgOtherClinicWait)} on average ` +
+    `instead of ${duration(b.avgOtherClinicWait)}. Simulated network.`));
+}
+
 // label, how to read it off one side's summary
 const ROWS = [
   ["Average ER wait", (s) => duration(s.avgErWait)],
@@ -47,7 +74,9 @@ function render() {
   const scenario = selected();
   const r = results[scenario];
   $("sides").hidden = !r;
+  $("headline").hidden = !r;
   if (r) {
+    renderHeadline(r);
     renderSide($("side-baseline"), r.baseline);
     renderSide($("side-triage"), r.triage);
   }

@@ -1,0 +1,1177 @@
+{
+ "_note": "Written by: node tests/about-results.js --write. Every number is from the simulated network. Times are minutes. Checked against fresh runs by tests/about.test.js.",
+ "demoSeed": 17,
+ "seeds": 50,
+ "interval": [
+  0.1,
+  0.9
+ ],
+ "shares": [
+  0,
+  0.1,
+  0.25,
+  0.5,
+  1
+ ],
+ "saturday": {
+  "low": {
+   "baseline": {
+    "avgErWait": 542.0859598853868,
+    "erPatients": 349,
+    "avgTimeToTreatment": 574.97,
+    "medianTimeToTreatment": 565,
+    "p90TimeToTreatment": 1094.5,
+    "over3h": 237,
+    "afterClosing": 0,
+    "byType": {
+     "er": 300,
+     "urgent": 0,
+     "ortho": 0,
+     "peds": 0
+    },
+    "byFacility": {
+     "ER_RAL": 117,
+     "ER_DUR": 66,
+     "ER_CH": 46,
+     "ER_CARY": 71,
+     "UC_NRAL": 0,
+     "UC_GAR": 0,
+     "UC_MOR": 0,
+     "UC_SDUR": 0,
+     "ORTHO_RAL": 0,
+     "ORTHO_CH": 0,
+     "PEDS_CARY": 0,
+     "PEDS_WF": 0
+    },
+    "avgOtherClinicWait": 71.23703703703704,
+    "otherClinicPatients": 135
+   },
+   "triage": {
+    "avgErWait": 239.25,
+    "erPatients": 204,
+    "avgTimeToTreatment": 267.67,
+    "medianTimeToTreatment": 256,
+    "p90TimeToTreatment": 507.60000000000014,
+    "over3h": 194,
+    "afterClosing": 40,
+    "byType": {
+     "er": 155,
+     "urgent": 56,
+     "ortho": 50,
+     "peds": 39
+    },
+    "byFacility": {
+     "ER_RAL": 41,
+     "ER_DUR": 40,
+     "ER_CH": 33,
+     "ER_CARY": 41,
+     "UC_NRAL": 18,
+     "UC_GAR": 16,
+     "UC_MOR": 12,
+     "UC_SDUR": 10,
+     "ORTHO_RAL": 23,
+     "ORTHO_CH": 27,
+     "PEDS_CARY": 24,
+     "PEDS_WF": 15
+    },
+    "avgOtherClinicWait": 201.75555555555556,
+    "otherClinicPatients": 135
+   }
+  },
+  "medium": {
+   "baseline": {
+    "avgErWait": 542.0859598853868,
+    "erPatients": 349,
+    "avgTimeToTreatment": 574.97,
+    "medianTimeToTreatment": 565,
+    "p90TimeToTreatment": 1094.5,
+    "over3h": 237,
+    "afterClosing": 0,
+    "byType": {
+     "er": 300,
+     "urgent": 0,
+     "ortho": 0,
+     "peds": 0
+    },
+    "byFacility": {
+     "ER_RAL": 117,
+     "ER_DUR": 66,
+     "ER_CH": 46,
+     "ER_CARY": 71,
+     "UC_NRAL": 0,
+     "UC_GAR": 0,
+     "UC_MOR": 0,
+     "UC_SDUR": 0,
+     "ORTHO_RAL": 0,
+     "ORTHO_CH": 0,
+     "PEDS_CARY": 0,
+     "PEDS_WF": 0
+    },
+    "avgOtherClinicWait": 25.31851851851852,
+    "otherClinicPatients": 135
+   },
+   "triage": {
+    "avgErWait": 187.34104046242774,
+    "erPatients": 173,
+    "avgTimeToTreatment": 207,
+    "medianTimeToTreatment": 198,
+    "p90TimeToTreatment": 408.1,
+    "over3h": 151,
+    "afterClosing": 25,
+    "byType": {
+     "er": 124,
+     "urgent": 106,
+     "ortho": 40,
+     "peds": 30
+    },
+    "byFacility": {
+     "ER_RAL": 31,
+     "ER_DUR": 35,
+     "ER_CH": 28,
+     "ER_CARY": 30,
+     "UC_NRAL": 28,
+     "UC_GAR": 31,
+     "UC_MOR": 27,
+     "UC_SDUR": 20,
+     "ORTHO_RAL": 18,
+     "ORTHO_CH": 22,
+     "PEDS_CARY": 18,
+     "PEDS_WF": 12
+    },
+    "avgOtherClinicWait": 161.32592592592593,
+    "otherClinicPatients": 135
+   }
+  },
+  "high": {
+   "baseline": {
+    "avgErWait": 542.0859598853868,
+    "erPatients": 349,
+    "avgTimeToTreatment": 574.97,
+    "medianTimeToTreatment": 565,
+    "p90TimeToTreatment": 1094.5,
+    "over3h": 237,
+    "afterClosing": 0,
+    "byType": {
+     "er": 300,
+     "urgent": 0,
+     "ortho": 0,
+     "peds": 0
+    },
+    "byFacility": {
+     "ER_RAL": 117,
+     "ER_DUR": 66,
+     "ER_CH": 46,
+     "ER_CARY": 71,
+     "UC_NRAL": 0,
+     "UC_GAR": 0,
+     "UC_MOR": 0,
+     "UC_SDUR": 0,
+     "ORTHO_RAL": 0,
+     "ORTHO_CH": 0,
+     "PEDS_CARY": 0,
+     "PEDS_WF": 0
+    },
+    "avgOtherClinicWait": 16.31851851851852,
+    "otherClinicPatients": 135
+   },
+   "triage": {
+    "avgErWait": 156.9671052631579,
+    "erPatients": 152,
+    "avgTimeToTreatment": 170.88333333333333,
+    "medianTimeToTreatment": 168.5,
+    "p90TimeToTreatment": 333.1,
+    "over3h": 121,
+    "afterClosing": 9,
+    "byType": {
+     "er": 103,
+     "urgent": 140,
+     "ortho": 33,
+     "peds": 24
+    },
+    "byFacility": {
+     "ER_RAL": 25,
+     "ER_DUR": 33,
+     "ER_CH": 23,
+     "ER_CARY": 22,
+     "UC_NRAL": 43,
+     "UC_GAR": 34,
+     "UC_MOR": 35,
+     "UC_SDUR": 28,
+     "ORTHO_RAL": 15,
+     "ORTHO_CH": 18,
+     "PEDS_CARY": 14,
+     "PEDS_WF": 10
+    },
+    "avgOtherClinicWait": 129.68148148148148,
+    "otherClinicPatients": 135
+   }
+  }
+ },
+ "ratio": {
+  "low": {
+   "median": 0.45277671320862795,
+   "min": 0.38029734452433467,
+   "max": 0.554739500899768,
+   "demo": 0.4655373323825591
+  },
+  "medium": {
+   "median": 0.35011559324471997,
+   "min": 0.28828025333890284,
+   "max": 0.4411898618910305,
+   "demo": 0.360018783588709
+  },
+  "high": {
+   "median": 0.27773214449494404,
+   "min": 0.23479006965690868,
+   "max": 0.3546820458339657,
+   "demo": 0.2972039120881669
+  }
+ },
+ "adoption": {
+  "low": {
+   "avgErWait": [
+    {
+     "share": 0,
+     "median": 541.4859998857133,
+     "low": 504.66800144512314,
+     "high": 616.7915149166989,
+     "min": 444.13142857142856,
+     "max": 704.9005847953216,
+     "demo": 542.0859598853868
+    },
+    {
+     "share": 0.1,
+     "median": 492.0352178260529,
+     "low": 448.01962342511433,
+     "high": 559.0657716805488,
+     "min": 393.5372670807453,
+     "max": 630.6930379746835,
+     "demo": 488.015625
+    },
+    {
+     "share": 0.25,
+     "median": 414.55329489802244,
+     "low": 364.12638823274045,
+     "high": 486.49693583273256,
+     "min": 323.07462686567163,
+     "max": 552.1161971830986,
+     "demo": 416.8932384341637
+    },
+    {
+     "share": 0.5,
+     "median": 304.04144642686765,
+     "low": 259.88513883880273,
+     "high": 363.45953532380156,
+     "min": 230.20642201834863,
+     "max": 399.70212765957444,
+     "demo": 323.4956140350877
+    },
+    {
+     "share": 1,
+     "median": 234.80742675872364,
+     "low": 208.56548546003495,
+     "high": 264.32003261578603,
+     "min": 193.87234042553192,
+     "max": 323.7208121827411,
+     "demo": 239.25
+    }
+   ],
+   "avgTimeToTreatment": [
+    {
+     "share": 0,
+     "median": 578.0083333333333,
+     "low": 533.3696666666667,
+     "high": 652.224,
+     "min": 473.29333333333335,
+     "max": 734.76,
+     "demo": 574.97
+    },
+    {
+     "share": 0.1,
+     "median": 485.7683333333333,
+     "low": 438.577,
+     "high": 552.7346666666667,
+     "min": 392.42,
+     "max": 617.7566666666667,
+     "demo": 479.2266666666667
+    },
+    {
+     "share": 0.25,
+     "median": 386.59000000000003,
+     "low": 341.2493333333333,
+     "high": 448.44533333333334,
+     "min": 317.91,
+     "max": 507.35,
+     "demo": 379.77
+    },
+    {
+     "share": 0.5,
+     "median": 297.56,
+     "low": 261.00933333333336,
+     "high": 348.524,
+     "min": 243.30333333333334,
+     "max": 376.31,
+     "demo": 305.1166666666667
+    },
+    {
+     "share": 1,
+     "median": 263.9433333333333,
+     "low": 233.48433333333335,
+     "high": 317.65133333333335,
+     "min": 221.26333333333332,
+     "max": 341.15,
+     "demo": 267.67
+    }
+   ],
+   "avgOtherClinicWait": [
+    {
+     "share": 0,
+     "median": 126.13883928571428,
+     "low": 84.43938140825922,
+     "high": 172.96199579831932,
+     "min": 44.28225806451613,
+     "max": 201.46212121212122,
+     "demo": 71.23703703703704
+    },
+    {
+     "share": 0.1,
+     "median": 142.49263217097865,
+     "low": 103.45437742114001,
+     "high": 189.3822312037398,
+     "min": 56.846774193548384,
+     "max": 222.13636363636363,
+     "demo": 90.48148148148148
+    },
+    {
+     "share": 0.25,
+     "median": 170.55634082229827,
+     "low": 125.39826395738805,
+     "high": 211.7379233680227,
+     "min": 74.46774193548387,
+     "max": 248.17424242424244,
+     "demo": 120.22962962962963
+    },
+    {
+     "share": 0.5,
+     "median": 202.4444474613087,
+     "low": 169.99910761154857,
+     "high": 245.81969167523127,
+     "min": 124.58064516129032,
+     "max": 296.24242424242425,
+     "demo": 170.25185185185185
+    },
+    {
+     "share": 1,
+     "median": 234.17139582272034,
+     "low": 194.25931697931696,
+     "high": 277.61259231025775,
+     "min": 160.41935483870967,
+     "max": 326.15441176470586,
+     "demo": 201.75555555555556
+    }
+   ],
+   "over3h": [
+    {
+     "share": 0,
+     "median": 239.5,
+     "low": 223,
+     "high": 254,
+     "min": 213,
+     "max": 259,
+     "demo": 237
+    },
+    {
+     "share": 0.1,
+     "median": 216,
+     "low": 199.8,
+     "high": 229,
+     "min": 188,
+     "max": 240,
+     "demo": 211
+    },
+    {
+     "share": 0.25,
+     "median": 195.5,
+     "low": 181,
+     "high": 216,
+     "min": 165,
+     "max": 232,
+     "demo": 191
+    },
+    {
+     "share": 0.5,
+     "median": 187,
+     "low": 165.9,
+     "high": 213.2,
+     "min": 156,
+     "max": 229,
+     "demo": 192
+    },
+    {
+     "share": 1,
+     "median": 187,
+     "low": 157.8,
+     "high": 202.70000000000002,
+     "min": 149,
+     "max": 231,
+     "demo": 194
+    }
+   ]
+  },
+  "medium": {
+   "avgErWait": [
+    {
+     "share": 0,
+     "median": 541.4859998857133,
+     "low": 504.66800144512314,
+     "high": 616.7915149166989,
+     "min": 444.13142857142856,
+     "max": 704.9005847953216,
+     "demo": 542.0859598853868
+    },
+    {
+     "share": 0.1,
+     "median": 491.5247355492054,
+     "low": 445.1138277848013,
+     "high": 556.3844858571653,
+     "min": 393.221875,
+     "max": 629.6225806451613,
+     "demo": 488.015625
+    },
+    {
+     "share": 0.25,
+     "median": 406.72993717701894,
+     "low": 351.80642172345364,
+     "high": 480.1924222386797,
+     "min": 317.118320610687,
+     "max": 545.5185185185185,
+     "demo": 390.42599277978337
+    },
+    {
+     "share": 0.5,
+     "median": 284.2298097251586,
+     "low": 235.076007751938,
+     "high": 334.3840151515152,
+     "min": 205.59024390243903,
+     "max": 390.56880733944956,
+     "demo": 302.88425925925924
+    },
+    {
+     "share": 1,
+     "median": 187.16220918528745,
+     "low": 153.98297090030465,
+     "high": 216.46855801517225,
+     "min": 139,
+     "max": 252.54437869822485,
+     "demo": 187.34104046242774
+    }
+   ],
+   "avgTimeToTreatment": [
+    {
+     "share": 0,
+     "median": 578.0083333333333,
+     "low": 533.3696666666667,
+     "high": 652.224,
+     "min": 473.29333333333335,
+     "max": 734.76,
+     "demo": 574.97
+    },
+    {
+     "share": 0.1,
+     "median": 481.525,
+     "low": 430.5916666666667,
+     "high": 549.3236666666667,
+     "min": 385.6333333333333,
+     "max": 599.7466666666667,
+     "demo": 472.7866666666667
+    },
+    {
+     "share": 0.25,
+     "median": 364.695,
+     "low": 313.92266666666666,
+     "high": 422.5566666666667,
+     "min": 287.5933333333333,
+     "max": 467.30333333333334,
+     "demo": 342.00333333333333
+    },
+    {
+     "share": 0.5,
+     "median": 249.625,
+     "low": 216.87966666666668,
+     "high": 298.27833333333336,
+     "min": 203.49,
+     "max": 316.8833333333333,
+     "demo": 254.18
+    },
+    {
+     "share": 1,
+     "median": 205.99,
+     "low": 179.78133333333335,
+     "high": 248.46333333333334,
+     "min": 166.82333333333332,
+     "max": 272.5133333333333,
+     "demo": 207
+    }
+   ],
+   "avgOtherClinicWait": [
+    {
+     "share": 0,
+     "median": 54.4820411871593,
+     "low": 30.40778110944528,
+     "high": 82.53690592130893,
+     "min": 22.5748031496063,
+     "max": 102.1917808219178,
+     "demo": 25.31851851851852
+    },
+    {
+     "share": 0.1,
+     "median": 72.10260263268619,
+     "low": 44.1317599351176,
+     "high": 102.04249283384404,
+     "min": 31.387096774193548,
+     "max": 112.42465753424658,
+     "demo": 42.75555555555555
+    },
+    {
+     "share": 0.25,
+     "median": 96.52248564443687,
+     "low": 66.56207792207792,
+     "high": 127.43596401553876,
+     "min": 41.685483870967744,
+     "max": 158.38235294117646,
+     "demo": 82.37037037037037
+    },
+    {
+     "share": 0.5,
+     "median": 135.40893317209105,
+     "low": 107.47737747653807,
+     "high": 164.476572726781,
+     "min": 88.99193548387096,
+     "max": 192.62121212121212,
+     "demo": 115.82222222222222
+    },
+    {
+     "share": 1,
+     "median": 169.85791474341568,
+     "low": 141.35789825282632,
+     "high": 204.79354427274959,
+     "min": 123.40322580645162,
+     "max": 239.22058823529412,
+     "demo": 161.32592592592593
+    }
+   ],
+   "over3h": [
+    {
+     "share": 0,
+     "median": 239.5,
+     "low": 223,
+     "high": 254,
+     "min": 213,
+     "max": 259,
+     "demo": 237
+    },
+    {
+     "share": 0.1,
+     "median": 210,
+     "low": 196.9,
+     "high": 226,
+     "min": 185,
+     "max": 234,
+     "demo": 209
+    },
+    {
+     "share": 0.25,
+     "median": 176.5,
+     "low": 160.9,
+     "high": 194.4,
+     "min": 149,
+     "max": 214,
+     "demo": 166
+    },
+    {
+     "share": 0.5,
+     "median": 151.5,
+     "low": 127.9,
+     "high": 184.3,
+     "min": 123,
+     "max": 210,
+     "demo": 146
+    },
+    {
+     "share": 1,
+     "median": 149.5,
+     "low": 119.9,
+     "high": 176,
+     "min": 106,
+     "max": 204,
+     "demo": 151
+    }
+   ]
+  },
+  "high": {
+   "avgErWait": [
+    {
+     "share": 0,
+     "median": 541.4859998857133,
+     "low": 504.66800144512314,
+     "high": 616.7915149166989,
+     "min": 444.13142857142856,
+     "max": 704.9005847953216,
+     "demo": 542.0859598853868
+    },
+    {
+     "share": 0.1,
+     "median": 491.5247355492054,
+     "low": 445.2148095790099,
+     "high": 556.3844858571653,
+     "min": 392.72100313479626,
+     "max": 629.9449838187702,
+     "demo": 487.6677115987461
+    },
+    {
+     "share": 0.25,
+     "median": 403.20933648699116,
+     "low": 347.1036586749894,
+     "high": 478.7186358493616,
+     "min": 317.118320610687,
+     "max": 548.9509433962264,
+     "demo": 381.507299270073
+    },
+    {
+     "share": 0.5,
+     "median": 271.9040135859166,
+     "low": 216.54256945111987,
+     "high": 323.5237500866791,
+     "min": 197.91370558375635,
+     "max": 391.97607655502395,
+     "demo": 275.81904761904764
+    },
+    {
+     "share": 1,
+     "median": 144.49440102381277,
+     "low": 119.42788461538461,
+     "high": 167.59274728968822,
+     "min": 105.61486486486487,
+     "max": 200.88888888888889,
+     "demo": 156.9671052631579
+    }
+   ],
+   "avgTimeToTreatment": [
+    {
+     "share": 0,
+     "median": 578.0083333333333,
+     "low": 533.3696666666667,
+     "high": 652.224,
+     "min": 473.29333333333335,
+     "max": 734.76,
+     "demo": 574.97
+    },
+    {
+     "share": 0.1,
+     "median": 479.64166666666665,
+     "low": 428.542,
+     "high": 544.5196666666667,
+     "min": 381.8466666666667,
+     "max": 593.4833333333333,
+     "demo": 469.68
+    },
+    {
+     "share": 0.25,
+     "median": 355.755,
+     "low": 300.18066666666664,
+     "high": 408.5253333333334,
+     "min": 273.89,
+     "max": 450.96666666666664,
+     "demo": 324.66333333333336
+    },
+    {
+     "share": 0.5,
+     "median": 221.75,
+     "low": 181.49433333333334,
+     "high": 260.906,
+     "min": 175.09333333333333,
+     "max": 287.32666666666665,
+     "demo": 221.73
+    },
+    {
+     "share": 1,
+     "median": 162.51999999999998,
+     "low": 139.01666666666668,
+     "high": 196.74,
+     "min": 131.22666666666666,
+     "max": 218.12,
+     "demo": 170.88333333333333
+    }
+   ],
+   "avgOtherClinicWait": [
+    {
+     "share": 0,
+     "median": 31.062512894573963,
+     "low": 20.33304147465438,
+     "high": 54.55413669064748,
+     "min": 9.874015748031496,
+     "max": 66.73972602739725,
+     "demo": 16.31851851851852
+    },
+    {
+     "share": 0.1,
+     "median": 40.81312233285918,
+     "low": 25.671668236402166,
+     "high": 65.3991334205363,
+     "min": 18.708661417322833,
+     "max": 72.45205479452055,
+     "demo": 28.044444444444444
+    },
+    {
+     "share": 0.25,
+     "median": 60.80942028985507,
+     "low": 42.01416823308271,
+     "high": 88.67392324093817,
+     "min": 31.282258064516128,
+     "max": 110.26470588235294,
+     "demo": 58.85925925925926
+    },
+    {
+     "share": 0.5,
+     "median": 95.63525367472735,
+     "low": 69.87998707706767,
+     "high": 122.51139178882458,
+     "min": 60.37931034482759,
+     "max": 144.58823529411765,
+     "demo": 89.81481481481481
+    },
+    {
+     "share": 1,
+     "median": 135.30714285714285,
+     "low": 109.0129775444736,
+     "high": 164.74526112185688,
+     "min": 88.83620689655173,
+     "max": 199.625,
+     "demo": 129.68148148148148
+    }
+   ],
+   "over3h": [
+    {
+     "share": 0,
+     "median": 239.5,
+     "low": 223,
+     "high": 254,
+     "min": 213,
+     "max": 259,
+     "demo": 237
+    },
+    {
+     "share": 0.1,
+     "median": 209,
+     "low": 194.9,
+     "high": 225,
+     "min": 183,
+     "max": 230,
+     "demo": 209
+    },
+    {
+     "share": 0.25,
+     "median": 167.5,
+     "low": 149.9,
+     "high": 183.1,
+     "min": 140,
+     "max": 191,
+     "demo": 161
+    },
+    {
+     "share": 0.5,
+     "median": 122,
+     "low": 98.8,
+     "high": 151.1,
+     "min": 92,
+     "max": 178,
+     "demo": 125
+    },
+    {
+     "share": 1,
+     "median": 107,
+     "low": 82.8,
+     "high": 150.3,
+     "min": 64,
+     "max": 163,
+     "demo": 121
+    }
+   ]
+  }
+ },
+ "herding": {
+  "low": {
+   "aware": {
+    "avgErWait": 239.25,
+    "erPatients": 204,
+    "avgTimeToTreatment": 267.67,
+    "medianTimeToTreatment": 256,
+    "p90TimeToTreatment": 507.60000000000014,
+    "over3h": 194,
+    "afterClosing": 40,
+    "byType": {
+     "er": 155,
+     "urgent": 56,
+     "ortho": 50,
+     "peds": 39
+    },
+    "byFacility": {
+     "ER_RAL": 41,
+     "ER_DUR": 40,
+     "ER_CH": 33,
+     "ER_CARY": 41,
+     "UC_NRAL": 18,
+     "UC_GAR": 16,
+     "UC_MOR": 12,
+     "UC_SDUR": 10,
+     "ORTHO_RAL": 23,
+     "ORTHO_CH": 27,
+     "PEDS_CARY": 24,
+     "PEDS_WF": 15
+    },
+    "avgOtherClinicWait": 201.75555555555556,
+    "otherClinicPatients": 135,
+    "longestWaitByFacility": {
+     "ER_CARY": 620,
+     "ORTHO_CH": 526,
+     "ER_RAL": 513,
+     "ER_DUR": 464,
+     "ORTHO_RAL": 309,
+     "PEDS_WF": 400,
+     "UC_NRAL": 373,
+     "ER_CH": 646,
+     "UC_GAR": 451,
+     "PEDS_CARY": 526,
+     "UC_SDUR": 456,
+     "UC_MOR": 348
+    }
+   },
+   "naive": {
+    "avgErWait": 373.3333333333333,
+    "erPatients": 252,
+    "avgTimeToTreatment": 435.1666666666667,
+    "medianTimeToTreatment": 396.5,
+    "p90TimeToTreatment": 857.2000000000003,
+    "over3h": 225,
+    "afterClosing": 45,
+    "byType": {
+     "er": 203,
+     "urgent": 0,
+     "ortho": 93,
+     "peds": 4
+    },
+    "byFacility": {
+     "ER_RAL": 78,
+     "ER_DUR": 38,
+     "ER_CH": 25,
+     "ER_CARY": 62,
+     "UC_NRAL": 0,
+     "UC_GAR": 0,
+     "UC_MOR": 0,
+     "UC_SDUR": 0,
+     "ORTHO_RAL": 39,
+     "ORTHO_CH": 54,
+     "PEDS_CARY": 0,
+     "PEDS_WF": 4
+    },
+    "avgOtherClinicWait": 131.9925925925926,
+    "otherClinicPatients": 135,
+    "longestWaitByFacility": {
+     "ER_CARY": 1081,
+     "ORTHO_CH": 1053,
+     "ER_RAL": 896,
+     "ER_DUR": 428,
+     "ORTHO_RAL": 700,
+     "PEDS_WF": 156,
+     "ER_CH": 566
+    }
+   }
+  },
+  "medium": {
+   "aware": {
+    "avgErWait": 187.34104046242774,
+    "erPatients": 173,
+    "avgTimeToTreatment": 207,
+    "medianTimeToTreatment": 198,
+    "p90TimeToTreatment": 408.1,
+    "over3h": 151,
+    "afterClosing": 25,
+    "byType": {
+     "er": 124,
+     "urgent": 106,
+     "ortho": 40,
+     "peds": 30
+    },
+    "byFacility": {
+     "ER_RAL": 31,
+     "ER_DUR": 35,
+     "ER_CH": 28,
+     "ER_CARY": 30,
+     "UC_NRAL": 28,
+     "UC_GAR": 31,
+     "UC_MOR": 27,
+     "UC_SDUR": 20,
+     "ORTHO_RAL": 18,
+     "ORTHO_CH": 22,
+     "PEDS_CARY": 18,
+     "PEDS_WF": 12
+    },
+    "avgOtherClinicWait": 161.32592592592593,
+    "otherClinicPatients": 135,
+    "longestWaitByFacility": {
+     "ER_CARY": 467,
+     "ORTHO_CH": 535,
+     "ER_RAL": 425,
+     "UC_SDUR": 368,
+     "UC_MOR": 301,
+     "ER_DUR": 367,
+     "UC_GAR": 424,
+     "ORTHO_RAL": 238,
+     "PEDS_WF": 336,
+     "UC_NRAL": 351,
+     "ER_CH": 508,
+     "PEDS_CARY": 341
+    }
+   },
+   "naive": {
+    "avgErWait": 291.0416666666667,
+    "erPatients": 192,
+    "avgTimeToTreatment": 326.3933333333333,
+    "medianTimeToTreatment": 256.5,
+    "p90TimeToTreatment": 808.1,
+    "over3h": 179,
+    "afterClosing": 43,
+    "byType": {
+     "er": 143,
+     "urgent": 81,
+     "ortho": 73,
+     "peds": 3
+    },
+    "byFacility": {
+     "ER_RAL": 38,
+     "ER_DUR": 21,
+     "ER_CH": 22,
+     "ER_CARY": 62,
+     "UC_NRAL": 44,
+     "UC_GAR": 15,
+     "UC_MOR": 0,
+     "UC_SDUR": 22,
+     "ORTHO_RAL": 21,
+     "ORTHO_CH": 52,
+     "PEDS_CARY": 0,
+     "PEDS_WF": 3
+    },
+    "avgOtherClinicWait": 133.05185185185186,
+    "otherClinicPatients": 135,
+    "longestWaitByFacility": {
+     "ER_CARY": 1081,
+     "ORTHO_CH": 1035,
+     "ER_RAL": 420,
+     "ER_DUR": 183,
+     "UC_GAR": 163,
+     "ORTHO_RAL": 438,
+     "PEDS_WF": 40,
+     "UC_NRAL": 547,
+     "ER_CH": 485,
+     "UC_SDUR": 340
+    }
+   }
+  },
+  "high": {
+   "aware": {
+    "avgErWait": 156.9671052631579,
+    "erPatients": 152,
+    "avgTimeToTreatment": 170.88333333333333,
+    "medianTimeToTreatment": 168.5,
+    "p90TimeToTreatment": 333.1,
+    "over3h": 121,
+    "afterClosing": 9,
+    "byType": {
+     "er": 103,
+     "urgent": 140,
+     "ortho": 33,
+     "peds": 24
+    },
+    "byFacility": {
+     "ER_RAL": 25,
+     "ER_DUR": 33,
+     "ER_CH": 23,
+     "ER_CARY": 22,
+     "UC_NRAL": 43,
+     "UC_GAR": 34,
+     "UC_MOR": 35,
+     "UC_SDUR": 28,
+     "ORTHO_RAL": 15,
+     "ORTHO_CH": 18,
+     "PEDS_CARY": 14,
+     "PEDS_WF": 10
+    },
+    "avgOtherClinicWait": 129.68148148148148,
+    "otherClinicPatients": 135,
+    "longestWaitByFacility": {
+     "ER_CARY": 400,
+     "ORTHO_CH": 374,
+     "ER_RAL": 324,
+     "UC_MOR": 247,
+     "UC_SDUR": 339,
+     "ER_DUR": 404,
+     "UC_GAR": 295,
+     "ORTHO_RAL": 205,
+     "PEDS_WF": 198,
+     "UC_NRAL": 326,
+     "ER_CH": 441,
+     "PEDS_CARY": 344
+    }
+   },
+   "naive": {
+    "avgErWait": 208.44378698224853,
+    "erPatients": 169,
+    "avgTimeToTreatment": 237.67,
+    "medianTimeToTreatment": 170.5,
+    "p90TimeToTreatment": 579.3000000000001,
+    "over3h": 131,
+    "afterClosing": 33,
+    "byType": {
+     "er": 120,
+     "urgent": 109,
+     "ortho": 68,
+     "peds": 3
+    },
+    "byFacility": {
+     "ER_RAL": 38,
+     "ER_DUR": 21,
+     "ER_CH": 22,
+     "ER_CARY": 39,
+     "UC_NRAL": 44,
+     "UC_GAR": 15,
+     "UC_MOR": 28,
+     "UC_SDUR": 22,
+     "ORTHO_RAL": 21,
+     "ORTHO_CH": 47,
+     "PEDS_CARY": 0,
+     "PEDS_WF": 3
+    },
+    "avgOtherClinicWait": 112.6,
+    "otherClinicPatients": 135,
+    "longestWaitByFacility": {
+     "ER_CARY": 616,
+     "ORTHO_CH": 1002,
+     "ER_RAL": 420,
+     "UC_MOR": 166,
+     "ER_DUR": 183,
+     "UC_GAR": 66,
+     "ORTHO_RAL": 438,
+     "PEDS_WF": 40,
+     "UC_NRAL": 348,
+     "ER_CH": 485,
+     "UC_SDUR": 178
+    }
+   }
+  }
+ },
+ "waitBand": {
+  "label": "Hospital A ER",
+  "facilityId": "ER_RAL",
+  "nowMin": 960,
+  "seed": 20260610,
+  "runs": 200,
+  "points": [
+   {
+    "t": 0,
+    "p10": 166,
+    "p25": 193,
+    "p50": 225,
+    "p75": 270,
+    "p90": 302.1
+   },
+   {
+    "t": 15,
+    "p10": 160,
+    "p25": 184,
+    "p50": 219,
+    "p75": 259,
+    "p90": 301.2
+   },
+   {
+    "t": 30,
+    "p10": 152.9,
+    "p25": 176.5,
+    "p50": 213,
+    "p75": 253.5,
+    "p90": 290.1
+   },
+   {
+    "t": 45,
+    "p10": 142,
+    "p25": 168,
+    "p50": 209,
+    "p75": 254.5,
+    "p90": 292.1
+   },
+   {
+    "t": 60,
+    "p10": 133,
+    "p25": 164.5,
+    "p50": 201.5,
+    "p75": 249.5,
+    "p90": 287.1
+   },
+   {
+    "t": 75,
+    "p10": 132.8,
+    "p25": 163,
+    "p50": 199,
+    "p75": 253,
+    "p90": 290
+   },
+   {
+    "t": 90,
+    "p10": 124,
+    "p25": 156.75,
+    "p50": 201.5,
+    "p75": 251.25,
+    "p90": 288
+   },
+   {
+    "t": 105,
+    "p10": 116.60000000000001,
+    "p25": 151.75,
+    "p50": 200,
+    "p75": 252.25,
+    "p90": 288
+   },
+   {
+    "t": 120,
+    "p10": 118,
+    "p25": 146,
+    "p50": 201.5,
+    "p75": 252.75,
+    "p90": 288
+   },
+   {
+    "t": 135,
+    "p10": 109,
+    "p25": 146.25,
+    "p50": 203,
+    "p75": 245.5,
+    "p90": 294.4
+   },
+   {
+    "t": 150,
+    "p10": 106.80000000000001,
+    "p25": 140.5,
+    "p50": 200.5,
+    "p75": 249.25,
+    "p90": 290.4
+   },
+   {
+    "t": 165,
+    "p10": 98.7,
+    "p25": 136.75,
+    "p50": 195.5,
+    "p75": 247,
+    "p90": 291
+   }
+  ]
+ }
+}
