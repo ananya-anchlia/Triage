@@ -1,0 +1,264 @@
+[
+  {
+    "id": "ER_RAL",
+    "label": "Hospital A ER",
+    "town": "Raleigh",
+    "lat": 35.7796,
+    "lng": -78.6382,
+    "type": "er",
+    "hours": "00:00-24:00",
+    "xray": true,
+    "specialists": [
+      "ortho",
+      "pediatrics"
+    ],
+    "slots": 6,
+    "min_age": 0,
+    "max_age": null,
+    "treats": [
+      "sprain_or_simple_fracture",
+      "cut",
+      "minor_burn",
+      "back_strain",
+      "child_minor_injury"
+    ]
+  },
+  {
+    "id": "ER_DUR",
+    "label": "Hospital B ER",
+    "town": "Durham",
+    "lat": 36.007,
+    "lng": -78.938,
+    "type": "er",
+    "hours": "00:00-24:00",
+    "xray": true,
+    "specialists": [
+      "ortho",
+      "pediatrics"
+    ],
+    "slots": 6,
+    "min_age": 0,
+    "max_age": null,
+    "treats": [
+      "sprain_or_simple_fracture",
+      "cut",
+      "minor_burn",
+      "back_strain",
+      "child_minor_injury"
+    ]
+  },
+  {
+    "id": "ER_CH",
+    "label": "Hospital C ER",
+    "town": "Chapel Hill",
+    "lat": 35.905,
+    "lng": -79.05,
+    "type": "er",
+    "hours": "00:00-24:00",
+    "xray": true,
+    "specialists": [
+      "ortho",
+      "pediatrics"
+    ],
+    "slots": 5,
+    "min_age": 0,
+    "max_age": null,
+    "treats": [
+      "sprain_or_simple_fracture",
+      "cut",
+      "minor_burn",
+      "back_strain",
+      "child_minor_injury"
+    ]
+  },
+  {
+    "id": "ER_CARY",
+    "label": "Hospital D ER",
+    "town": "Cary",
+    "lat": 35.788,
+    "lng": -78.77,
+    "type": "er",
+    "hours": "00:00-24:00",
+    "xray": true,
+    "specialists": [
+      "ortho",
+      "pediatrics"
+    ],
+    "slots": 5,
+    "min_age": 0,
+    "max_age": null,
+    "treats": [
+      "sprain_or_simple_fracture",
+      "cut",
+      "minor_burn",
+      "back_strain",
+      "child_minor_injury"
+    ]
+  },
+  {
+    "id": "UC_NRAL",
+    "label": "Urgent Care 1",
+    "town": "North Raleigh",
+    "lat": 35.87,
+    "lng": -78.62,
+    "type": "urgent",
+    "hours": "08:00-22:00",
+    "xray": true,
+    "specialists": [],
+    "slots": 3,
+    "min_age": 0,
+    "max_age": null,
+    "treats": [
+      "sprain_or_simple_fracture",
+      "cut",
+      "minor_burn",
+      "back_strain",
+      "child_minor_injury"
+    ]
+  },
+  {
+    "id": "UC_GAR",
+    "label": "Urgent Care 2",
+    "town": "Garner",
+    "lat": 35.7113,
+    "lng": -78.6142,
+    "type": "urgent",
+    "hours": "08:00-22:00",
+    "xray": false,
+    "specialists": [],
+    "slots": 3,
+    "min_age": 0,
+    "max_age": null,
+    "treats": [
+      "cut",
+      "minor_burn",
+      "back_strain",
+      "child_minor_injury"
+    ]
+  },
+  {
+    "id": "UC_MOR",
+    "label": "Urgent Care 3",
+    "town": "Morrisville",
+    "lat": 35.8235,
+    "lng": -78.8256,
+    "type": "urgent",
+    "hours": "08:00-22:00",
+    "xray": true,
+    "specialists": [],
+    "slots": 3,
+    "min_age": 0,
+    "max_age": null,
+    "treats": [
+      "sprain_or_simple_fracture",
+      "cut",
+      "minor_burn",
+      "back_strain",
+      "child_minor_injury"
+    ]
+  },
+  {
+    "id": "UC_SDUR",
+    "label": "Urgent Care 4",
+    "town": "South Durham",
+    "lat": 35.95,
+    "lng": -78.92,
+    "type": "urgent",
+    "hours": "08:00-22:00",
+    "xray": true,
+    "specialists": [],
+    "slots": 3,
+    "min_age": 0,
+    "max_age": null,
+    "treats": [
+      "sprain_or_simple_fracture",
+      "cut",
+      "minor_burn",
+      "back_strain",
+      "child_minor_injury"
+    ]
+  },
+  {
+    "id": "ORTHO_RAL",
+    "label": "Ortho Walk-in A",
+    "town": "Raleigh",
+    "lat": 35.82,
+    "lng": -78.66,
+    "type": "ortho",
+    "hours": "08:00-20:00",
+    "xray": true,
+    "specialists": [
+      "ortho"
+    ],
+    "slots": 2,
+    "min_age": 5,
+    "max_age": null,
+    "treats": [
+      "sprain_or_simple_fracture",
+      "back_strain"
+    ]
+  },
+  {
+    "id": "ORTHO_CH",
+    "label": "Ortho Walk-in B",
+    "town": "Chapel Hill",
+    "lat": 35.96,
+    "lng": -79.0,
+    "type": "ortho",
+    "hours": "08:00-20:00",
+    "xray": true,
+    "specialists": [
+      "ortho"
+    ],
+    "slots": 2,
+    "min_age": 5,
+    "max_age": null,
+    "treats": [
+      "sprain_or_simple_fracture",
+      "back_strain"
+    ]
+  },
+  {
+    "id": "PEDS_CARY",
+    "label": "Kids Urgent Care A",
+    "town": "Cary",
+    "lat": 35.75,
+    "lng": -78.8,
+    "type": "peds",
+    "hours": "08:00-20:00",
+    "xray": true,
+    "specialists": [
+      "pediatrics"
+    ],
+    "slots": 2,
+    "min_age": 0,
+    "max_age": 17,
+    "treats": [
+      "sprain_or_simple_fracture",
+      "cut",
+      "minor_burn",
+      "child_minor_injury"
+    ]
+  },
+  {
+    "id": "PEDS_WF",
+    "label": "Kids Urgent Care B",
+    "town": "Wake Forest",
+    "lat": 35.9799,
+    "lng": -78.5097,
+    "type": "peds",
+    "hours": "08:00-20:00",
+    "xray": false,
+    "specialists": [
+      "pediatrics"
+    ],
+    "slots": 2,
+    "min_age": 0,
+    "max_age": 17,
+    "treats": [
+      "cut",
+      "minor_burn",
+      "child_minor_injury"
+    ]
+  }
+]

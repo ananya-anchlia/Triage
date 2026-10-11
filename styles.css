@@ -1,0 +1,49 @@
+/* Plain functional styles for milestone 1. The Frutiger Aero pass is milestone 7. */
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+.emergency-bar {
+  background: #c00;
+  color: #fff;
+  text-align: center;
+  padding: 6px 12px;
+  font-weight: 600;
+}
+.emergency-bar a { color: #fff; }
+
+.demo-strip {
+  background: #fff3c4;
+  color: #333;
+  text-align: center;
+  padding: 4px 12px;
+  font-size: 0.85rem;
+}
+
+main { flex: 1; position: relative; min-height: 0; }
+#map { position: absolute; inset: 0; }
+
+.panel {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 1000;
+  width: 280px;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+.panel h1 { margin: 0 0 4px; font-size: 1.2rem; }
+.panel p { margin: 0 0 8px; font-size: 0.85rem; }
+.panel button { padding: 6px 12px; cursor: pointer; }
+#gemini-reply { white-space: pre-wrap; font-size: 0.85rem; margin: 8px 0 0; }
+
+.pin-label { font-weight: 600; }
+.pin-type { color: #555; text-transform: uppercase; font-size: 0.75rem; }
