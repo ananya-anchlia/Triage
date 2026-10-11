@@ -59,6 +59,28 @@ test("a pick lengthens the next person's wait at that facility, and only there",
   assert.deepEqual(otherAfter, otherBefore);
 });
 
+test("two picks in a row: the second person sees a longer wait there, every other facility is unchanged", () => {
+  const f = byId.ORTHO_RAL;
+  const drive = Sim.driveMinutes(demo.user, f);
+  const arriveAt = Math.max(0, Math.round(drive)); // what app.js passes for a "Go here"
+  const all = (state) => Object.fromEntries(facilities.map((x) => [x.id, Sim.estimateWait(x, state, Sim.driveMinutes(demo.user, x))]));
+  const start = mk(demo.nowMin);
+  const first = all(start); // what person 1 sees
+  assert.deepEqual(all(start), first, "showing results twice changes nothing");
+  const afterOne = Sim.addPick(start, f.id, arriveAt);
+  const second = all(afterOne); // what person 2 sees
+  const third = all(Sim.addPick(afterOne, f.id, arriveAt));
+  if (show) console.log("ORTHO_RAL picks 0/1/2:", [first, second, third].map((r) => `${r[f.id].low}-${r[f.id].high}`).join("  "));
+  assert.ok(second[f.id].median > first[f.id].median, `${second[f.id].median} vs ${first[f.id].median}`);
+  assert.ok(third[f.id].median > second[f.id].median, `${third[f.id].median} vs ${second[f.id].median}`);
+  assert.ok(second[f.id].low > first[f.id].low || second[f.id].high > first[f.id].high, "the shown range moves too");
+  for (const x of facilities) {
+    if (x.id === f.id) continue;
+    assert.deepEqual(second[x.id], first[x.id], x.id);
+    assert.deepEqual(third[x.id], first[x.id], x.id);
+  }
+});
+
 test("a recommendation alone changes nothing (addPick is pure)", () => {
   const s = mk(960);
   Sim.addPick(s, "ER_RAL", 10);

@@ -90,3 +90,14 @@ fieldset.q.unanswered { border-left: 3px solid #b00; padding-left: 6px; }
 .emergency-head { position: sticky; top: -12px; z-index: 1; background: #c00; margin: -14px -14px 0; padding: 14px 14px 6px; }
 .emergency-head h2 { margin: 0; font-size: 1.6rem; }
 .call911.secondary { display: inline-block; background: transparent; color: #fff; border: 1px solid #fff; font-size: 0.85rem; font-weight: 600; padding: 3px 10px; margin: 6px 0 0; }
+
+/* Milestone 5: mic button, "Go here", reset demo. Frutiger Aero pass is milestone 7. */
+#mic-btn { width: 100%; margin-bottom: 6px; padding: 8px 12px; }
+#mic-btn[hidden], #mic-note[hidden] { display: none; }
+#mic-btn.listening { background: #c00; color: #fff; border: 2px solid #800; font-weight: 700; }
+#mic-btn.listening::before { content: ""; display: inline-block; width: 10px; height: 10px; margin-right: 8px; border-radius: 50%; background: #fff; animation: mic-pulse 1s ease-in-out infinite; }
+@keyframes mic-pulse { 50% { opacity: 0.2; } }
+@media (prefers-reduced-motion: reduce) { #mic-btn.listening::before { animation: none; } }
+.results button.go { margin-top: 4px; font-weight: 600; }
+.picked { background: #e6f6ef; border: 1px solid #0a7; border-radius: 6px; padding: 6px 8px; }
+.demo-controls { display: flex; justify-content: space-between; align-items: center; margin: 12px 0 0; padding-top: 6px; border-top: 1px solid #ddd; color: #555; font-size: 0.8rem; }

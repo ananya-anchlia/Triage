@@ -24,6 +24,7 @@ L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
 let facilities = [];
 let checklists = null;
 let state = null;
+let demoStart = null; // data/demo-state.json as loaded, so "Reset demo" can restore it
 let user = null;
 let userMarker = null;
 const highlightLayer = L.layerGroup().addTo(map);
@@ -57,6 +58,7 @@ async function loadData() {
   const [f, c, d] = await Promise.all(["facilities", "checklists", "demo-state"].map(get));
   facilities = f;
   checklists = c;
+  demoStart = d;
   state = d ? Sim.makeState(d.nowMin, d.facilities) : null;
   user = d ? d.user : null;
   if (user) userMarker = L.marker([user.lat, user.lng]).addTo(map).bindTooltip("You (demo location, near NC State)");
@@ -157,8 +159,93 @@ function applyIntake(data, text) {
   return true;
 }
 
+// ---- Speech input ------------------------------------------------------------------------------
+// The browser's built-in speech recognition types into the describe box. It never submits anything: the
+// person reviews and edits the text, then presses "Read my description" themselves. Without browser
+// support the mic button stays hidden and typing works as before.
+
+const SpeechRecognitionApi = window.SpeechRecognition || window.webkitSpeechRecognition;
+const MIC_ERRORS = {
+  "not-allowed": "The microphone is blocked for this page. Allow it in your browser's site settings, or type instead.",
+  "service-not-allowed": "Speech input isn't allowed in this browser. Type what happened instead.",
+  "audio-capture": "No microphone was found. Type what happened instead.",
+  "no-speech": "Didn't hear anything. Try again, or type what happened.",
+  network: "Speech input needs an internet connection. Type what happened instead.",
+};
+let recognition = null; // the session that is listening now, or null
+
+function setListening(on) {
+  const btn = $("mic-btn");
+  btn.classList.toggle("listening", on);
+  btn.setAttribute("aria-pressed", String(on));
+  btn.textContent = on ? "Listening... tap to stop" : "Speak instead";
+}
+
+function startListening() {
+  const box = $("description");
+  const max = box.maxLength > 0 ? box.maxLength : 1000;
+  const before = box.value.trim();
+  const rec = new SpeechRecognitionApi();
+  rec.lang = "en-US";
+  rec.continuous = true; // keep going through pauses until the person taps stop
+  rec.interimResults = true;
+  let failed = false;
+  // Events from a session that has been replaced or cancelled are ignored.
+  rec.onresult = (e) => {
+    if (recognition !== rec) return;
+    let heard = "";
+    for (const r of e.results) heard += r[0].transcript;
+    box.value = [before, heard.trim()].filter(Boolean).join(" ").slice(0, max);
+  };
+  rec.onerror = (e) => {
+    if (recognition !== rec || e.error === "aborted") return;
+    failed = true;
+    setStatus(MIC_ERRORS[e.error] || "Speech input stopped working. Type what happened instead.");
+  };
+  rec.onend = () => {
+    if (recognition !== rec) return;
+    recognition = null;
+    setListening(false);
+    if (!failed) setStatus(box.value.trim() ? "Check the text and fix anything that's wrong, then press \"Read my description\"." : "");
+  };
+  recognition = rec;
+  try {
+    rec.start();
+  } catch (err) {
+    recognition = null;
+    setStatus("Speech input couldn't start. Type what happened instead.");
+    return;
+  }
+  setListening(true);
+  setStatus("Listening... say what happened.");
+}
+
+// keep = true lets the browser finish the words it is still working on; false drops them.
+function stopListening(keep) {
+  const rec = recognition;
+  if (!rec) return;
+  if (keep) { rec.stop(); return; } // onend tidies up
+  recognition = null;
+  setListening(false);
+  try { rec.abort(); } catch (err) { /* already stopped */ }
+}
+
+function setUpSpeech() {
+  if (!SpeechRecognitionApi) return; // mic button and its note stay hidden
+  $("mic-btn").hidden = false;
+  $("mic-note").hidden = false;
+  $("mic-btn").addEventListener("click", () => (recognition ? stopListening(true) : startListening()));
+  // Typing while listening: the person's edits win, so stop writing into the box.
+  $("description").addEventListener("input", () => {
+    if (!recognition) return;
+    stopListening(false);
+    setStatus("");
+  });
+}
+
 // Never leaves the person stuck: any failure, junk reply or timeout shows the plain hand-filled form.
 async function readDescription() {
+  stopListening(false);
   const text = $("description").value.trim();
   if (!text) { setStatus("Type what happened first, or fill in the form yourself."); return; }
   if (!checklists) { setStatus("Still loading. Try again in a moment."); return; }
@@ -201,6 +288,7 @@ function cancelIntake() {
 }
 
 function showManualForm(message) {
+  stopListening(false);
   cancelIntake();
   prefill = {};
   answers = {};
@@ -266,6 +354,7 @@ function showResults(res) {
     li.append(el("div", { className: "small" }, "simulated wait range"));
     li.append(el("div", {}, `Drive about ${mins(r.driveMin)} (approx.) \u00b7 total about ${mins(r.totalMin)}`));
     li.append(el("div", { className: "small" }, r.reasons.join(" \u00b7 ")));
+    li.append(el("button", { type: "button", className: "go", onclick: () => goHere(r, body) }, "Go here"));
     ol.append(li);
   }
   body.append(ol);
@@ -285,6 +374,36 @@ function showResults(res) {
   map.fitBounds(pts, { padding: [40, 40] });
 }
 
+// ---- Picks -------------------------------------------------------------------------------------
+
+function showPickCount() {
+  $("pick-count").textContent = `Simulated picks so far: ${state ? state.picks.length : 0}`;
+}
+
+// A pick adds one simulated patient to that facility's line at arrival time (now + drive). Showing the
+// results never calls this. The arrival minute is rounded the same way Sim.estimateWait rounds it, so the
+// next person with the same drive lines up behind this one.
+function goHere(r, body) {
+  if (!state) return;
+  const arriveAt = Math.max(0, Math.round(r.driveMin));
+  state = Sim.addPick(state, r.facility.id, arriveAt);
+  showPickCount();
+  for (const b of body.querySelectorAll("button.go")) b.disabled = true; // one pick per person
+  body.querySelector("ol").after(el("p", { className: "picked", role: "status" },
+    `Added one simulated patient to the line at ${r.facility.label}, arriving in about ${mins(arriveAt)} (approx.). ` +
+    "The next person sees the updated wait there. This is a simulation: no real place has been told you are coming."));
+}
+
+// Restores the starting lines from data/demo-state.json and forgets every pick. Results on screen were
+// worked out from the old lines, so they are cleared; any other screen is left as it is.
+function resetDemo() {
+  if (!demoStart) { setStatus("The demo data didn't load. Reload the page."); return; }
+  state = Sim.makeState(demoStart.nowMin, demoStart.facilities);
+  showPickCount();
+  if ($("result").querySelector(".results")) resetAll();
+  setStatus("Demo reset: every line is back to its starting state.");
+}
+
 function showOther() {
   const body = el("div", { className: "other" },
     el("h2", {}, "ER or your doctor's nurse line"),
@@ -297,6 +416,7 @@ function showOther() {
 }
 
 function resetAll() {
+  stopListening(false);
   cancelIntake();
   prefill = {};
   answers = {};
@@ -315,6 +435,8 @@ function resetAll() {
 $("read-btn").addEventListener("click", readDescription);
 $("manual-btn").addEventListener("click", () => showManualForm(""));
 $("start-over").addEventListener("click", resetAll);
+$("reset-demo").addEventListener("click", resetDemo);
+setUpSpeech();
 $("injury-type").addEventListener("change", renderChecklist);
 
 // Every tap is recorded. A pre-filled answer the person changes loses its "from what you said" mark.

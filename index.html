@@ -26,6 +26,10 @@
                   placeholder="Example: My daughter fell off the monkey bars and her wrist is swollen."></textarea>
         <p class="note">Your description is sent to Google's Gemini API to be read. Nothing is saved.
           Gemini only fills in the form below for you to check. It does not decide anything.</p>
+        <button id="mic-btn" type="button" aria-pressed="false" hidden>Speak instead</button>
+        <p id="mic-note" class="note" hidden>The microphone uses your browser's speech-to-text (in Chrome, the
+          audio goes to Google). Your words appear in the box above for you to check and edit. Nothing is sent
+          until you press "Read my description".</p>
         <button id="read-btn" type="button">Read my description</button>
         <button id="manual-btn" type="button" class="link">Fill in the form myself</button>
       </section>
@@ -63,6 +67,11 @@
       </form>
 
       <div id="result" aria-live="polite"></div>
+
+      <p class="demo-controls">
+        <span id="pick-count">Simulated picks so far: 0</span>
+        <button id="reset-demo" type="button" class="link">Reset demo</button>
+      </p>
     </aside>
   </main>
 
