@@ -53,8 +53,10 @@ answers: give "yes", "no" or "unknown" for EVERY question listed below.
   his fingers", "she never passed out").
 - "unknown" for everything else: not mentioned, hinted at, hedged ("not sure", "maybe", "I think", "I didn't
   see"), or only implied. Never work out a "no" from silence, from the injury sounding minor, from the injury
-  type, or from another answer. Most answers will be "unknown". That is expected and correct: the app asks
-  the person directly about every "unknown".
+  type, from the cause, from the body part, or from another answer. For example "I burned my finger on a hot
+  pan" does not answer whether the burn was chemical, electrical or on the face: those stay "unknown".
+  Most answers will be "unknown". That is expected and correct: the app asks the person directly about
+  every "unknown".
 
 Questions:
 ${ITEM_IDS.map((id) => `- ${id}: ${checklists.items[id]}`).join("\n")}`;
@@ -161,6 +163,9 @@ export async function runIntake(text, opts = {}) {
         responseMimeType: "application/json",
         responseJsonSchema: RESPONSE_SCHEMA,
         abortSignal: signal,
+        // Default thinking took from 5 s to over 40 s on some descriptions, past the 8 s limit.
+        // This model does not accept "MINIMAL".
+        thinkingConfig: { thinkingLevel: "LOW" },
       },
     });
     generate = (userText, signal) => retryOverloaded(async () => (await request(userText, signal)).text, signal);
