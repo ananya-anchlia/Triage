@@ -16,7 +16,7 @@ Work on ONE milestone per session. Do not touch files or features outside it.
   `{ injury_type, age_years, body_part, answers }` or `{ "error": "..." }`.
   `answers` has one value per item in data/checklists.json: "yes", "no" or "unknown".
   The server validates Gemini's reply: any missing item, unknown key or other value becomes
-  "unknown". The whole intake has an 8-second limit; on any error, junk reply or timeout the app
+  "unknown". The whole intake has a 12-second limit; on any error, junk reply or timeout the app
   shows the plain hand-filled form.
 - `GEMINI_API_KEY` lives only in `.env` (gitignored) and Vercel environment variables.
   Never put it in browser code, never commit it, never print it.

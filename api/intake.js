@@ -13,7 +13,7 @@ import { GoogleGenAI } from "@google/genai";
 import checklists from "../data/checklists.json" with { type: "json" };
 
 export const MODEL = "gemini-3.8-flash"; // current stable Flash model per ai.google.dev/gemini-api/docs/models (Oct 10, 2026)
-export const TIMEOUT_MS = 8000; // for the whole intake, including the one retry
+export const TIMEOUT_MS = 12000; // for the whole intake, including the one retry
 const RETRY_WAIT_MS = 500;
 export const MAX_TEXT_CHARS = 1000;
 export const INJURY_TYPES = ["sprain_or_simple_fracture", "cut", "minor_burn", "back_strain", "child_minor_injury", "other"];

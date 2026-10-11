@@ -11,10 +11,18 @@
     <span>Emergency? <a href="tel:911">Call 911</a></span>
   </div>
   <div class="demo-strip">Demo network: simulated facilities and wait times.</div>
+  <div class="sky" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+  <header class="topbar">
+    <a class="brand" href="index.html">Triage</a>
+    <nav aria-label="Pages">
+      <a href="index.html">Find care</a>
+      <a href="saturday.html" aria-current="page">Busy Saturday</a>
+      <a href="about.html">About</a>
+    </nav>
+  </header>
 
   <main class="saturday">
    <div class="wrap">
-    <p><a href="index.html">&larr; Back to Triage</a></p>
     <h1>Busy Saturday <span class="sim-label">simulated network</span></h1>
     <p>300 simulated people with minor, non-emergency injuries need care between noon and 4 PM, on top of each
       facility's usual simulated arrivals. The same afternoon is played twice with the same people, injuries,
@@ -29,6 +37,8 @@
 
     <button id="run-btn" type="button">Run the afternoon</button>
     <p id="run-status" class="status" role="status"></p>
+
+    <p id="headline" class="headline" hidden></p>
 
     <div class="sides" id="sides" hidden>
       <section>
@@ -45,7 +55,7 @@
 
     <section id="all-scenarios" hidden>
       <h2>All three capacity scenarios <span class="sim-label">simulated network</span></h2>
-      <table>
+      <table class="data">
         <thead>
           <tr><th rowspan="2"></th><th colspan="2">Low</th><th colspan="2">Medium</th><th colspan="2">High</th></tr>
           <tr><th>Nearest ER</th><th>Triage</th><th>Nearest ER</th><th>Triage</th><th>Nearest ER</th><th>Triage</th></tr>

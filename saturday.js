@@ -319,7 +319,10 @@ const Saturday = (() => {
     return run.result();
   }
 
-  return { SETTINGS, SCENARIOS, makePeople, makeBackground, applyScenario, makeAfternoon, start, compare };
+  return {
+    SETTINGS, SCENARIOS, makePeople, makeBackground, applyScenario, makeAfternoon, start, compare,
+    chooseNearestER, chooseTriage, summarize, // used by about-sim.js, so the About page reuses these unchanged
+  };
 })();
 
 if (typeof globalThis !== "undefined") globalThis.Saturday = Saturday;

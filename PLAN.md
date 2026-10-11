@@ -277,7 +277,7 @@ People waiting in line at each facility, in demo-state.json:
 
 ### Gemini intake
 
-**Endpoint:** `POST /api/intake` with `{ "text": "..." }`. Returns `{ injury_type, age_years, body_part, answers }` (the schema in the Gemini intake section), or `{ "error": "..." }` on any failure, junk reply, or after 8 seconds, in which case the app shows the plain hand-filled form.
+**Endpoint:** `POST /api/intake` with `{ "text": "..." }`. Returns `{ injury_type, age_years, body_part, answers }` (the schema in the Gemini intake section), or `{ "error": "..." }` on any failure, junk reply, or after 12 seconds, in which case the app shows the plain hand-filled form.
 
 **Instructions to give Gemini (system prompt):** the exact text is `SYSTEM_PROMPT` in api/intake.js. In summary:
 

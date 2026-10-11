@@ -13,12 +13,23 @@
     <span>Emergency? <a href="tel:911">Call 911</a></span>
   </div>
   <div class="demo-strip">Demo network: simulated facilities and wait times.</div>
+  <div class="sky" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+  <header class="topbar">
+    <h1 class="brand">Triage</h1>
+    <nav aria-label="Pages">
+      <a href="index.html" aria-current="page">Find care</a>
+      <a href="saturday.html">Busy Saturday</a>
+      <a href="about.html">About</a>
+    </nav>
+  </header>
 
-  <main>
-    <div id="map" aria-label="Map of simulated Triangle facilities"></div>
+  <main class="app">
+    <div class="map-frame">
+      <div id="map" aria-label="Map of simulated Triangle facilities"></div>
+      <div id="map-legend" class="map-legend glass" hidden></div>
+    </div>
 
     <aside class="panel" id="panel">
-      <h1>Triage</h1>
 
       <section id="describe">
         <label for="description">Describe what happened</label>
@@ -26,7 +37,12 @@
                   placeholder="Example: My daughter fell off the monkey bars and her wrist is swollen."></textarea>
         <p class="note">Your description is sent to Google's Gemini API to be read. Nothing is saved.
           Gemini only fills in the form below for you to check. It does not decide anything.</p>
-        <button id="mic-btn" type="button" aria-pressed="false" hidden>Speak instead</button>
+        <div class="mic-wrap" id="mic-wrap" hidden>
+          <button id="mic-btn" type="button" class="mic-orb" aria-pressed="false" aria-labelledby="mic-label">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15a3.5 3.5 0 0 0 3.5-3.5v-6a3.5 3.5 0 0 0-7 0v6A3.5 3.5 0 0 0 12 15Zm6-3.5a1 1 0 0 1 2 0 8 8 0 0 1-7 7.94V22a1 1 0 0 1-2 0v-2.56a8 8 0 0 1-7-7.94 1 1 0 0 1 2 0 6 6 0 0 0 12 0Z"/></svg>
+          </button>
+          <span id="mic-label" class="mic-label">Speak instead</span>
+        </div>
         <p id="mic-note" class="note" hidden>The microphone uses your browser's speech-to-text (in Chrome, the
           audio goes to Google). Your words appear in the box above for you to check and edit. Nothing is sent
           until you press "Read my description".</p>
@@ -68,7 +84,7 @@
 
       <div id="result" aria-live="polite"></div>
 
-      <p><a href="saturday.html">Busy Saturday: simulate a whole afternoon</a></p>
+      <p class="panel-links"><a href="saturday.html">Busy Saturday: simulate a whole afternoon</a></p>
 
       <p class="demo-controls">
         <span id="pick-count">Simulated picks so far: 0</span>

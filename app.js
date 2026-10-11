@@ -6,12 +6,20 @@ const TYPE_NAMES = {
   ortho: "Ortho walk-in",
   peds: "Kids' urgent care",
 };
-const TYPE_COLORS = {
-  er: "#c0392b",
-  urgent: "#2980b9",
-  ortho: "#27ae60",
-  peds: "#8e44ad",
+// The icon inside each pin says what kind of place it is (drawn as strokes, 24 x 24).
+const TYPE_ICONS = {
+  er: '<path d="M12 5v14M5 12h14"/>',
+  urgent: '<circle cx="12" cy="12" r="8"/><path d="M12 7.5V12l3 2"/>',
+  ortho: '<path d="M8.5 15.5l7-7"/><circle cx="6.6" cy="15.4" r="1.6"/><circle cx="8.6" cy="17.4" r="1.6"/><circle cx="15.4" cy="6.6" r="1.6"/><circle cx="17.4" cy="8.6" r="1.6"/>',
+  peds: '<circle cx="12" cy="12" r="8"/><path d="M9 10.2v.1M15 10.2v.1M8.8 14a4 4 0 0 0 6.4 0"/>',
 };
+// Pin colour, by the median simulated wait for someone leaving the demo location now. Display only: these
+// cut-offs colour the pins and nothing else. Ranking never reads them.
+const WAIT_COLORS = [
+  { key: "short", under: 30, text: "under 30 min" },
+  { key: "medium", under: 120, text: "30 min to 2 h" },
+  { key: "long", under: Infinity, text: "over 2 h" },
+];
 
 const map = L.map("map").setView([35.9, -78.75], 10);
 
@@ -29,26 +37,62 @@ let user = null;
 let userMarker = null;
 const highlightLayer = L.layerGroup().addTo(map);
 
+const pins = {}; // { [facilityId]: marker }
+
+const orbHtml = (type, waitKey) =>
+  `<div class="orb wait-${waitKey}"><svg viewBox="0 0 24 24" aria-hidden="true">${TYPE_ICONS[type]}</svg></div>`;
+
+// The simulated wait at a place for someone leaving the demo location now, or null when it can't be
+// worked out (no demo state, or the place is closed on arrival).
+function pinWait(f) {
+  if (!state || !user) return null;
+  try { return Sim.estimateWait(f, state, Sim.driveMinutes(user, f)); } catch (err) { return null; }
+}
+
+function pinText(f, wait) {
+  const box = document.createElement("div");
+  const add = (className, text) => box.append(Object.assign(document.createElement("div"), { className, textContent: text }));
+  add("pin-label", f.label);
+  add("pin-type", `${TYPE_NAMES[f.type]} \u00b7 ${f.town}`);
+  if (wait) {
+    add("pin-wait", `${wait.low}\u2013${wait.high} min`);
+    add("pin-type", "simulated wait range, leaving the demo location now");
+  }
+  return box;
+}
+
+// Draws the pins the first time, then recolours them whenever the lines change (a pick, or Reset demo).
 function drawFacilities() {
   for (const f of facilities || []) {
-    const marker = L.circleMarker([f.lat, f.lng], {
-      radius: 9,
-      color: "#fff",
-      weight: 2,
-      fillColor: TYPE_COLORS[f.type],
-      fillOpacity: 1,
-    }).addTo(map);
-    const el = document.createElement("div");
-    const label = document.createElement("div");
-    label.className = "pin-label";
-    label.textContent = f.label;
-    const type = document.createElement("div");
-    type.className = "pin-type";
-    type.textContent = `${TYPE_NAMES[f.type]} · ${f.town}`;
-    el.append(label, type);
-    marker.bindTooltip(el, { direction: "top", offset: [0, -8] });
-    marker.bindPopup(el.cloneNode(true));
+    const wait = pinWait(f);
+    const color = wait ? WAIT_COLORS.find((c) => wait.median < c.under).key : "none";
+    const icon = L.divIcon({ className: "orb-pin", html: orbHtml(f.type, color), iconSize: [36, 36], iconAnchor: [18, 18] });
+    if (!pins[f.id]) pins[f.id] = L.marker([f.lat, f.lng], { icon, alt: f.label }).addTo(map);
+    else pins[f.id].setIcon(icon);
+    pins[f.id].unbindTooltip().unbindPopup();
+    pins[f.id].bindTooltip(pinText(f, wait), { direction: "top", offset: [0, -18] });
+    pins[f.id].bindPopup(pinText(f, wait));
   }
+}
+
+function drawLegend() {
+  const box = document.getElementById("map-legend");
+  if (!facilities) return;
+  const list = (rows) => {
+    const ul = document.createElement("ul");
+    for (const [html, text] of rows) {
+      const li = document.createElement("li");
+      li.innerHTML = html;
+      li.append(text);
+      ul.append(li);
+    }
+    return ul;
+  };
+  const title = Object.assign(document.createElement("h2"), { textContent: "Pin colour: simulated wait" });
+  box.replaceChildren(title,
+    list(WAIT_COLORS.map((c) => [`<div class="orb wait-${c.key}"></div>`, c.text])),
+    list(Object.keys(TYPE_ICONS).map((type) => [orbHtml(type, "none"), TYPE_NAMES[type]])));
+  box.hidden = false;
 }
 
 // Each file loads on its own: the checklist and the emergency screen must still work if the facility or
@@ -61,8 +105,12 @@ async function loadData() {
   demoStart = d;
   state = d ? Sim.makeState(d.nowMin, d.facilities) : null;
   user = d ? d.user : null;
-  if (user) userMarker = L.marker([user.lat, user.lng]).addTo(map).bindTooltip("You (demo location, near NC State)");
+  if (user) {
+    const icon = L.divIcon({ className: "you-pin", html: "<div></div>", iconSize: [18, 18], iconAnchor: [9, 9] });
+    userMarker = L.marker([user.lat, user.lng], { icon, alt: "You" }).addTo(map).bindTooltip("You (demo location, near NC State)");
+  }
   drawFacilities();
+  drawLegend();
 }
 
 // ---- Form ------------------------------------------------------------------------------------
@@ -70,7 +118,7 @@ async function loadData() {
 const $ = (id) => document.getElementById(id);
 const ANSWER_LABELS = { yes: "Yes", no: "No", not_sure: "Not sure" };
 const CHILD_TYPE = "child_minor_injury";
-const INTAKE_TIMEOUT_MS = 9500; // a little longer than the server's own 8 s limit
+const INTAKE_TIMEOUT_MS = 13500; // a little longer than the server's own 12 s limit
 
 let prefill = {}; // what Gemini pre-filled: { [itemId]: "yes" | "no" }. Unknown items are simply absent.
 let answers = {}; // the answers currently shown on the checklist: pre-filled ones plus the person's taps
@@ -178,7 +226,7 @@ function setListening(on) {
   const btn = $("mic-btn");
   btn.classList.toggle("listening", on);
   btn.setAttribute("aria-pressed", String(on));
-  btn.textContent = on ? "Listening... tap to stop" : "Speak instead";
+  $("mic-label").textContent = on ? "Listening... tap to stop" : "Speak instead";
 }
 
 function startListening() {
@@ -232,7 +280,7 @@ function stopListening(keep) {
 
 function setUpSpeech() {
   if (!SpeechRecognitionApi) return; // mic button and its note stay hidden
-  $("mic-btn").hidden = false;
+  $("mic-wrap").hidden = false;
   $("mic-note").hidden = false;
   $("mic-btn").addEventListener("click", () => (recognition ? stopListening(true) : startListening()));
   // Typing while listening: the person's edits win, so stop writing into the box.
@@ -251,7 +299,10 @@ async function readDescription() {
   if (!checklists) { setStatus("Still loading. Try again in a moment."); return; }
   const request = { controller: new AbortController() };
   intakeRequest = request;
+  // The wait can be up to 12 seconds, so the button itself says what is happening.
   $("read-btn").disabled = true;
+  $("read-btn").textContent = "Reading your description...";
+  $("read-btn").setAttribute("aria-busy", "true");
   setStatus("Reading your description...");
   const timer = setTimeout(() => request.controller.abort(), INTAKE_TIMEOUT_MS);
   let ok = false;
@@ -281,7 +332,7 @@ async function readDescription() {
     console.warn(`Intake fell back to the hand form. /api/intake: ${reason}`);
   } finally {
     clearTimeout(timer);
-    $("read-btn").disabled = false;
+    if (intakeRequest === request) restoreReadButton();
   }
   intakeRequest = null;
   if (ok) {
@@ -295,7 +346,13 @@ async function readDescription() {
 function cancelIntake() {
   if (intakeRequest) intakeRequest.controller.abort();
   intakeRequest = null;
+  restoreReadButton();
+}
+
+function restoreReadButton() {
   $("read-btn").disabled = false;
+  $("read-btn").textContent = "Read my description";
+  $("read-btn").removeAttribute("aria-busy");
 }
 
 function showManualForm(message) {
@@ -344,7 +401,7 @@ function showEmergency(res) {
 
   highlightLayer.clearLayers();
   if (er) {
-    L.circleMarker([er.facility.lat, er.facility.lng], { radius: 16, color: "#c00", weight: 4, fill: false })
+    L.circleMarker([er.facility.lat, er.facility.lng], { radius: 26, color: "#c00000", weight: 6, fill: false })
       .addTo(highlightLayer);
     map.setView([er.facility.lat, er.facility.lng], 11);
   }
@@ -377,12 +434,15 @@ function showResults(res) {
   highlightLayer.clearLayers();
   const pts = [[user.lat, user.lng]];
   res.top.forEach((r, i) => {
-    L.circleMarker([r.facility.lat, r.facility.lng], { radius: 15, color: "#0a7", weight: 4, fill: false })
-      .bindTooltip(`${i + 1}`, { permanent: true, direction: "center", className: "rank-tip" })
-      .addTo(highlightLayer);
+    // A flag under the pin: the place's number in the list and its simulated wait range.
+    const flag = el("div", {}, el("b", {}, `${i + 1}`), `${r.wait.low}\u2013${r.wait.high} min`);
+    L.marker([r.facility.lat, r.facility.lng], {
+      icon: L.divIcon({ className: "rank-flag", html: flag.outerHTML, iconSize: [0, 0], iconAnchor: [0, -22] }),
+      interactive: false, keyboard: false,
+    }).addTo(highlightLayer);
     pts.push([r.facility.lat, r.facility.lng]);
   });
-  map.fitBounds(pts, { padding: [40, 40] });
+  map.fitBounds(pts, { padding: [70, 70] });
 }
 
 // ---- Picks -------------------------------------------------------------------------------------
@@ -399,6 +459,7 @@ function goHere(r, body) {
   const arriveAt = Math.max(0, Math.round(r.driveMin));
   state = Sim.addPick(state, r.facility.id, arriveAt);
   showPickCount();
+  drawFacilities();
   for (const b of body.querySelectorAll("button.go")) b.disabled = true; // one pick per person
   body.querySelector("ol").after(el("p", { className: "picked", role: "status" },
     `Added one simulated patient to the line at ${r.facility.label}, arriving in about ${mins(arriveAt)} (approx.). ` +
@@ -411,6 +472,7 @@ function resetDemo() {
   if (!demoStart) { setStatus("The demo data didn't load. Reload the page."); return; }
   state = Sim.makeState(demoStart.nowMin, demoStart.facilities);
   showPickCount();
+  drawFacilities();
   if ($("result").querySelector(".results")) resetAll();
   setStatus("Demo reset: every line is back to its starting state.");
 }
