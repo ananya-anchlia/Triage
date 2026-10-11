@@ -1,0 +1,58 @@
+{
+  "_note": "Scripted Saturday 4 PM lines. waiting = people in line; inTreatment = people currently being treated (all slots busy whenever anyone is waiting). Only this file may be adjusted for the demo.",
+  "nowMin": 960,
+  "user": {
+    "lat": 35.7847,
+    "lng": -78.6821
+  },
+  "facilities": {
+    "ER_RAL": {
+      "waiting": 16,
+      "inTreatment": 6
+    },
+    "ER_DUR": {
+      "waiting": 15,
+      "inTreatment": 6
+    },
+    "ER_CH": {
+      "waiting": 12,
+      "inTreatment": 5
+    },
+    "ER_CARY": {
+      "waiting": 18,
+      "inTreatment": 5
+    },
+    "UC_NRAL": {
+      "waiting": 3,
+      "inTreatment": 3
+    },
+    "UC_GAR": {
+      "waiting": 6,
+      "inTreatment": 3
+    },
+    "UC_MOR": {
+      "waiting": 1,
+      "inTreatment": 3
+    },
+    "UC_SDUR": {
+      "waiting": 4,
+      "inTreatment": 3
+    },
+    "ORTHO_RAL": {
+      "waiting": 1,
+      "inTreatment": 2
+    },
+    "ORTHO_CH": {
+      "waiting": 2,
+      "inTreatment": 2
+    },
+    "PEDS_CARY": {
+      "waiting": 2,
+      "inTreatment": 2
+    },
+    "PEDS_WF": {
+      "waiting": 0,
+      "inTreatment": 0
+    }
+  }
+}
