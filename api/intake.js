@@ -7,10 +7,10 @@
 //
 // GEMINI_API_KEY is read from the environment only. It is never logged and never sent to the browser.
 // tests/run-safety.js imports runIntake() from this file, so the tests use exactly this logic.
-import { createRequire } from "node:module";
 import { GoogleGenAI } from "@google/genai";
-
-const checklists = createRequire(import.meta.url)("../data/checklists.json");
+// A static import, so Vercel's file tracing bundles the checklist with the function. (A computed
+// require() is invisible to it: the file was missing on Vercel and the function crashed on load.)
+import checklists from "../data/checklists.json" with { type: "json" };
 
 export const MODEL = "gemini-3.8-flash"; // current stable Flash model per ai.google.dev/gemini-api/docs/models (Oct 10, 2026)
 export const TIMEOUT_MS = 8000; // for the whole intake, including the one retry
@@ -76,7 +76,14 @@ const RESPONSE_SCHEMA = {
   required: ["injury_type", "age_years", "body_part", "answers"],
 };
 
-class IntakeError extends Error {}
+// code is a short, fixed label that is safe to send to the browser: no_text, no_key, timeout, bad_reply
+// or gemini_error. The message stays in the server log.
+class IntakeError extends Error {
+  constructor(message, code) {
+    super(message);
+    this.code = code;
+  }
+}
 
 // Strict on purpose. Only an exact "yes" or "no" (any letter case, or the boolean true for yes) survives;
 // everything else is "unknown". Unknown keys are dropped; missing items are "unknown".
@@ -92,10 +99,10 @@ function normalizeAnswer(value) {
 export function validateIntake(raw, lists = checklists) {
   let data = raw;
   if (typeof raw === "string") {
-    try { data = JSON.parse(raw); } catch { throw new IntakeError("reply was not JSON"); }
+    try { data = JSON.parse(raw); } catch { throw new IntakeError("reply was not JSON", "bad_reply"); }
   }
-  if (data === null || typeof data !== "object" || Array.isArray(data)) throw new IntakeError("reply was not an object");
-  if (!INJURY_TYPES.includes(data.injury_type)) throw new IntakeError("reply had no usable injury type");
+  if (data === null || typeof data !== "object" || Array.isArray(data)) throw new IntakeError("reply was not an object", "bad_reply");
+  if (!INJURY_TYPES.includes(data.injury_type)) throw new IntakeError("reply had no usable injury type", "bad_reply");
 
   const age = data.age_years;
   const age_years = typeof age === "number" && Number.isFinite(age) && age >= 0 && age <= 120 ? age : null;
@@ -122,7 +129,7 @@ function withTimeout(promise, ms, controller) {
   const timeout = new Promise((_, reject) => {
     timer = setTimeout(() => {
       controller.abort();
-      reject(new IntakeError("timed out"));
+      reject(new IntakeError("timed out", "timeout"));
     }, ms);
   });
   return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
@@ -143,7 +150,7 @@ export async function retryOverloaded(call, signal, waitMs = RETRY_WAIT_MS) {
 // The whole intake: description in, validated pre-fill out. Throws IntakeError on any failure.
 // opts.generate is for tests only: it replaces the Gemini call with a function returning the raw reply.
 export async function runIntake(text, opts = {}) {
-  if (typeof text !== "string" || text.trim() === "") throw new IntakeError("empty description");
+  if (typeof text !== "string" || text.trim() === "") throw new IntakeError("empty description", "no_text");
   const description = text.trim().slice(0, MAX_TEXT_CHARS);
   const timeoutMs = opts.timeoutMs ?? TIMEOUT_MS;
   const controller = new AbortController();
@@ -151,7 +158,7 @@ export async function runIntake(text, opts = {}) {
   let generate = opts.generate;
   if (!generate) {
     const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) throw new IntakeError("GEMINI_API_KEY is not set");
+    if (!apiKey) throw new IntakeError("GEMINI_API_KEY is not set", "no_key");
     const ai = new GoogleGenAI({ apiKey });
     const request = (userText, signal) => ai.models.generateContent({
       model: MODEL,
@@ -176,7 +183,7 @@ export async function runIntake(text, opts = {}) {
     raw = await withTimeout(Promise.resolve().then(() => generate(description, controller.signal)), timeoutMs, controller);
   } catch (err) {
     if (err instanceof IntakeError) throw err;
-    throw new IntakeError(safeMessage(err));
+    throw new IntakeError(safeMessage(err), "gemini_error");
   }
   return validateIntake(raw);
 }
@@ -192,19 +199,20 @@ function safeMessage(err) {
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
-    return res.status(405).json({ error: "Use POST." });
+    return res.status(405).json({ error: "Use POST.", code: "method_not_allowed" });
   }
   let body = req.body;
   if (typeof body === "string") {
     try { body = JSON.parse(body); } catch { body = null; }
   }
   const text = body && typeof body.text === "string" ? body.text : "";
-  if (text.trim() === "") return res.status(400).json({ error: "No description given." });
+  if (text.trim() === "") return res.status(400).json({ error: "No description given.", code: "no_text" });
 
   try {
     return res.status(200).json(await runIntake(text));
   } catch (err) {
-    console.error("Intake failed:", err instanceof IntakeError ? err.message : safeMessage(err));
-    return res.status(502).json({ error: "Could not read the description." });
+    const code = err instanceof IntakeError ? err.code : "server_error";
+    console.error(`Intake failed (${code}):`, err instanceof IntakeError ? err.message : safeMessage(err));
+    return res.status(502).json({ error: "Could not read the description.", code });
   }
 }

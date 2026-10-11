@@ -1,0 +1,8 @@
+{
+  "functions": {
+    "api/intake.js": {
+      "maxDuration": 15,
+      "includeFiles": "data/checklists.json"
+    }
+  }
+}

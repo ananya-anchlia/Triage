@@ -262,12 +262,23 @@ async function readDescription() {
       body: JSON.stringify({ text }),
       signal: request.controller.signal,
     });
-    const data = await res.json();
+    // Read as text first: when the function itself crashes, Vercel's error page is not JSON.
+    const body = await res.text();
     if (intakeRequest !== request) return; // the person moved on while this was loading
-    ok = res.ok && !data.error && applyIntake(data, text);
+    let data = null;
+    try { data = JSON.parse(body); } catch (err) { /* not JSON */ }
+    ok = res.ok && data !== null && !data.error && applyIntake(data, text);
+    if (!ok) {
+      const reason = data && data.error ? `${data.code || "no code"}: ${data.error}`
+        : data ? "the reply could not be used"
+        : `not JSON: ${res.headers.get("x-vercel-error") || body.slice(0, 200)}`;
+      console.warn(`Intake fell back to the hand form. /api/intake status ${res.status}, ${reason}`);
+    }
   } catch (err) {
     if (intakeRequest !== request) return;
     ok = false;
+    const reason = err.name === "AbortError" ? `no answer within ${INTAKE_TIMEOUT_MS} ms` : `request failed (${err.message})`;
+    console.warn(`Intake fell back to the hand form. /api/intake: ${reason}`);
   } finally {
     clearTimeout(timer);
     $("read-btn").disabled = false;
