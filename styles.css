@@ -101,3 +101,26 @@ fieldset.q.unanswered { border-left: 3px solid #b00; padding-left: 6px; }
 .results button.go { margin-top: 4px; font-weight: 600; }
 .picked { background: #e6f6ef; border: 1px solid #0a7; border-radius: 6px; padding: 6px 8px; }
 .demo-controls { display: flex; justify-content: space-between; align-items: center; margin: 12px 0 0; padding-top: 6px; border-top: 1px solid #ddd; color: #555; font-size: 0.8rem; }
+
+/* Milestone 6: Busy Saturday page. Frutiger Aero pass is milestone 7. */
+main.saturday { overflow-y: auto; padding: 12px 20px 32px; }
+main.saturday .wrap { max-width: 980px; margin: 0 auto; }
+main.saturday h1 { font-size: 1.5rem; margin: 8px 0; }
+main.saturday h2 { font-size: 1.1rem; margin: 0 0 8px; }
+.sim-label { background: #fff3c4; color: #5a4500; border-radius: 8px; padding: 1px 8px; font-size: 0.8rem; font-weight: 400; white-space: nowrap; }
+.capacity { border: 1px solid #ccc; border-radius: 6px; margin-bottom: 12px; }
+.capacity label { display: inline-block; margin-right: 16px; }
+#run-btn { font-size: 1.1rem; padding: 10px 20px; cursor: pointer; }
+.sides { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; margin-bottom: 16px; }
+.sides[hidden], #all-scenarios[hidden] { display: none; }
+#typical { margin: -8px 0 16px; }
+.sides section { border: 1px solid #ccc; border-radius: 8px; padding: 12px 14px; }
+.sides dl { margin: 0; display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; }
+.sides dt { color: #333; }
+.sides dd { margin: 0; text-align: right; font-weight: 700; font-size: 1.15rem; }
+#all-scenarios { margin-bottom: 20px; overflow-x: auto; }
+#all-scenarios table { border-collapse: collapse; width: 100%; font-size: 0.85rem; }
+#all-scenarios th, #all-scenarios td { border: 1px solid #ccc; padding: 4px 8px; text-align: right; }
+#all-scenarios thead th[colspan] { text-align: center; }
+#all-scenarios tbody th { text-align: left; font-weight: 400; }
+@media (max-width: 640px) { .sides { grid-template-columns: 1fr; } }

@@ -1,0 +1,21 @@
+{
+  "_note": "Written by: node tests/saturday-seeds.js --write. Minutes by which average time to treatment (drive + wait) was lower with Triage than with nearest ER, over the seeds. Simulated network.",
+  "seeds": 50,
+  "avgTimeToTreatmentLowerWithTriage": {
+    "low": {
+      "median": 315.64166666666665,
+      "min": 242.35000000000002,
+      "max": 413.5
+    },
+    "medium": {
+      "median": 375.0866666666667,
+      "min": 296.74,
+      "max": 486.44666666666666
+    },
+    "high": {
+      "median": 412.70500000000004,
+      "min": 338.64,
+      "max": 537.42
+    }
+  }
+}

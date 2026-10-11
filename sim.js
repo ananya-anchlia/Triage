@@ -110,12 +110,19 @@ const Sim = (() => {
 
   // ---- Facility helpers -------------------------------------------------------------------------
 
+  // Parsed once per hours string: isOpen is asked for every simulated minute of every run.
+  const parsedHours = new Map();
   function parseHours(hours) {
-    const [open, close] = hours.split("-").map((s) => {
-      const [h, m] = s.split(":").map(Number);
-      return h * 60 + m;
-    });
-    return { open, close };
+    let parsed = parsedHours.get(hours);
+    if (!parsed) {
+      const [open, close] = hours.split("-").map((s) => {
+        const [h, m] = s.split(":").map(Number);
+        return h * 60 + m;
+      });
+      parsed = { open, close };
+      parsedHours.set(hours, parsed);
+    }
+    return parsed;
   }
 
   // minuteOfDay in [0, 1440). Hours are same-day windows ("00:00-24:00" is always open).

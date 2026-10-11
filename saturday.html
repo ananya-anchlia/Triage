@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Triage: Busy Saturday</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="emergency-bar">
+    <span>Emergency? <a href="tel:911">Call 911</a></span>
+  </div>
+  <div class="demo-strip">Demo network: simulated facilities and wait times.</div>
+
+  <main class="saturday">
+   <div class="wrap">
+    <p><a href="index.html">&larr; Back to Triage</a></p>
+    <h1>Busy Saturday <span class="sim-label">simulated network</span></h1>
+    <p>300 simulated people with minor, non-emergency injuries need care between noon and 4 PM, on top of each
+      facility's usual simulated arrivals. The same afternoon is played twice with the same people, injuries,
+      home locations and other arrivals. Only where the 300 go is different.</p>
+
+    <fieldset class="capacity">
+      <legend>Urgent-care capacity</legend>
+      <label><input type="radio" name="scenario" value="low"> Low (<span data-slots="low"></span> treatment slots at each urgent care)</label>
+      <label><input type="radio" name="scenario" value="medium" checked> Medium (<span data-slots="medium"></span> each, as on the main page)</label>
+      <label><input type="radio" name="scenario" value="high"> High (<span data-slots="high"></span> each)</label>
+    </fieldset>
+
+    <button id="run-btn" type="button">Run the afternoon</button>
+    <p id="run-status" class="status" role="status"></p>
+
+    <div class="sides" id="sides" hidden>
+      <section>
+        <h2>Everyone goes to the nearest ER</h2>
+        <div id="side-baseline"></div>
+      </section>
+      <section>
+        <h2>Routed by Triage, one person at a time</h2>
+        <div id="side-triage"></div>
+      </section>
+    </div>
+
+    <p id="typical" class="small" hidden></p>
+
+    <section id="all-scenarios" hidden>
+      <h2>All three capacity scenarios <span class="sim-label">simulated network</span></h2>
+      <table>
+        <thead>
+          <tr><th rowspan="2"></th><th colspan="2">Low</th><th colspan="2">Medium</th><th colspan="2">High</th></tr>
+          <tr><th>Nearest ER</th><th>Triage</th><th>Nearest ER</th><th>Triage</th><th>Nearest ER</th><th>Triage</th></tr>
+        </thead>
+        <tbody id="all-body"></tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>How to read this</h2>
+      <ul class="small">
+        <li>Everything on this page is simulated. The facilities, lines and people are invented for the demo; the
+          numbers are not measurements or predictions for any real place.</li>
+        <li>Random seed <span id="seed"></span>, fixed, so the result is the same on every run. The settings were
+          fixed before the comparison was run, and all three capacity scenarios are shown whatever they show.
+          The seed is the one of 50 whose results sit closest to the middle of all 50; the first seed tried
+          gave an unusually light afternoon and was replaced.</li>
+        <li>Triage side: each person, in arrival order, takes the first place in the app's own ranking (drive +
+          median simulated wait among places that treat that injury and age), worked out from the lines at that
+          minute, including earlier people still on their way. It knows nothing about later arrivals.</li>
+        <li>Wait = arriving at the facility until treatment starts. Time to treatment = approx. drive + wait.</li>
+        <li>Average ER wait covers everyone at an ER who is not an emergency: any of the 300 who went there and
+          the ERs' other minor patients arriving noon to 4 PM. Emergencies always go first.</li>
+        <li>"Other patients at clinics" are not the 300: they are the usual arrivals at urgent cares, ortho
+          walk-ins and kids' urgent cares, whose lines get longer when people are routed there.</li>
+        <li>Lines start empty at midnight and fill from the simulated usual arrivals until noon.</li>
+        <li>Nobody gives up and leaves a line. A clinic keeps treating the people already in its line after
+          closing time; the app's wait estimate assumes the same.</li>
+        <li>Everyone on the Triage side takes the first place it lists.</li>
+      </ul>
+    </section>
+   </div>
+  </main>
+
+  <script src="sim.js"></script>
+  <script src="router.js"></script>
+  <script src="saturday.js"></script>
+  <script src="saturday-app.js"></script>
+</body>
+</html>
