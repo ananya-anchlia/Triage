@@ -12,6 +12,7 @@
   </div>
   <div class="demo-strip">Demo network: simulated facilities and wait times.</div>
   <div class="sky" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="workspace">
   <header class="topbar">
     <a class="brand" href="index.html">Triage</a>
     <nav aria-label="Pages">
@@ -23,6 +24,7 @@
 
   <main class="saturday">
    <div class="wrap">
+    <div class="window-title" aria-hidden="true"><span class="window-icon"></span><span>Busy Saturday.exe</span><span class="caption-buttons"><i></i><i></i><i></i></span></div>
     <h1>Busy Saturday <span class="sim-label">simulated network</span></h1>
     <p>300 simulated people with minor, non-emergency injuries need care between noon and 4 PM, on top of each
       facility's usual simulated arrivals. The same afternoon is played twice with the same people, injuries,
@@ -35,6 +37,17 @@
       <label><input type="radio" name="scenario" value="high"> High (<span data-slots="high"></span> each)</label>
     </fieldset>
 
+    <div class="loading-wave" aria-hidden="true">
+          <svg viewBox="0 0 240 48" focusable="false">
+            <defs>
+              <linearGradient id="wave-blue"><stop stop-color="#79e0e2"/><stop offset=".5" stop-color="#148cbb"/><stop offset="1" stop-color="#174c99"/></linearGradient>
+              <filter id="wave-glow" x="-20%" y="-100%" width="140%" height="300%"><feGaussianBlur stdDeviation="2"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            </defs>
+            <path class="wave-line" d="M8 24 C70 -20 170 68 232 24" stroke="url(#wave-blue)"/>
+            <path class="wave-pulse" d="M8 24 C70 -20 170 68 232 24" pathLength="100"/>
+            <g class="wave-bubbles"><circle cx="48" cy="30" r="3"/><circle cx="116" cy="10" r="2"/><circle cx="192" cy="34" r="4"/></g>
+          </svg>
+        </div>
     <button id="run-btn" type="button">Run the afternoon</button>
     <p id="run-status" class="status" role="status"></p>
 
@@ -55,13 +68,15 @@
 
     <section id="all-scenarios" hidden>
       <h2>All three capacity scenarios <span class="sim-label">simulated network</span></h2>
-      <table class="data">
+      <div class="table-scroll" tabindex="0" role="region" aria-label="All three capacity scenarios">
+        <table class="data">
         <thead>
           <tr><th rowspan="2"></th><th colspan="2">Low</th><th colspan="2">Medium</th><th colspan="2">High</th></tr>
           <tr><th>Nearest ER</th><th>Triage</th><th>Nearest ER</th><th>Triage</th><th>Nearest ER</th><th>Triage</th></tr>
         </thead>
         <tbody id="all-body"></tbody>
       </table>
+      </div>
     </section>
 
     <section>
@@ -89,6 +104,7 @@
     </section>
    </div>
   </main>
+  </div>
 
   <script src="sim.js"></script>
   <script src="router.js"></script>
