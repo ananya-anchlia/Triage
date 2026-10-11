@@ -247,8 +247,8 @@ Choose these once, write down why, and don't tune them to make Triage look good.
 
 | Setting | ER | Urgent care | Ortho | Kids' urgent care |
 | --- | --- | --- | --- | --- |
-| Minor-injury arrivals per hour (Sat afternoon) | 9 | 5 | 3 | 4 |
-| Emergency arrivals per hour (always go first) | 3 | 0 | 0 | 0 |
+| Minor-injury arrivals per hour (Sat afternoon) | 3 (was 9; recalibrated, see sim.js) | 5 | 3 | 4 |
+| Emergency arrivals per hour (always go first) | 0.25 (was 3; recalibrated, see sim.js) | 0 | 0 | 0 |
 | Average treatment time, minutes | 75 (emergencies 120) | 40 | 35 | 35 |
 
 - Arrivals are random (Poisson); treatment times random around the average (exponential is fine).

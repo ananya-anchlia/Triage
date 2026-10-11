@@ -8,12 +8,22 @@
 const Sim = (() => {
   // ---- Fixed constants ------------------------------------------------------------------------
 
-  // Minor-injury arrivals per hour, per facility, Saturday afternoon (PLAN.md "Simulation starting values").
-  // Reason: ERs see the most walk-ins; ortho and kids' clinics are smaller, narrower practices.
-  const MINOR_ARRIVALS_PER_HOUR = { er: 9, urgent: 5, ortho: 3, peds: 4 };
+  // Minor-injury arrivals per hour, per facility, Saturday afternoon.
+  // ER value RECALIBRATED from 9 to 3 (urgent/ortho/peds unchanged from PLAN.md). Reason: PLAN's 9/h plus 3/h
+  // emergencies asked a 6-slot ER for ~3x the work it can do (1035 treatment-min/h vs 360), so lines grew
+  // without bound and Hospital A ER's simulated median wait came out near 7 hours. CMS publishes the national
+  // median time from ED arrival to departure for discharged patients (OP-18b): 162 min for 10/2024-9/2025
+  // (CMS Provider Data Catalog, "Timely and Effective Care - National"; 123-202 min across volume tiers).
+  // A stay of that length means ER lines of hours, not a multi-hour runaway, so the ER rate was lowered
+  // until Hospital A ER's baseline median on the Saturday 4 PM state fell inside 2.5-4 h (about 215 min).
+  // This was set from that external figure, not from any Triage-vs-baseline result. Note: OP-18b includes
+  // treatment time while our "wait" excludes it, and a busy Saturday sits above the national median.
+  const MINOR_ARRIVALS_PER_HOUR = { er: 3, urgent: 5, ortho: 3, peds: 4 };
 
   // Emergency arrivals per hour. Only ERs receive them; they always jump the line (never interrupt treatment).
-  const EMERGENCY_ARRIVALS_PER_HOUR = { er: 3, urgent: 0, ortho: 0, peds: 0 };
+  // ER value RECALIBRATED from 3 to 0.25 for the same reason as above: 3/h x 120 min alone used the whole
+  // capacity of a 6-slot ER (360 min/h), leaving no room for anyone else to be treated.
+  const EMERGENCY_ARRIVALS_PER_HOUR = { er: 0.25, urgent: 0, ortho: 0, peds: 0 };
 
   // Mean treatment time in minutes, drawn exponential per patient.
   // Reason: PLAN.md starting values; exponential is the simple, memoryless choice.
@@ -174,7 +184,10 @@ const Sim = (() => {
   // Minutes the person arriving at `arriveAt` waits before treatment starts, in one run.
   // Patients in treatment are tracked apart from those waiting; emergencies go first in line but never
   // interrupt anyone already in treatment.
-  function runWait(facility, state, arriveAt, seed, run) {
+  // `opts` is for tests only: `extra` = extra patients [{t, emergency, treat, label}] injected into the run;
+  // `trace` = array that receives {label, startedAt} per patient who starts treatment, plus
+  // {label: "in-treatment-N", endsAt} for each patient already in treatment at the start.
+  function runWait(facility, state, arriveAt, seed, run, opts = {}) {
     const counts = state.facilities[facility.id] || { waiting: 0, inTreatment: 0 };
     const mean = MEAN_TREATMENT_MIN[facility.type];
     const startRng = mulberry32(subSeed(seed, run, hashString(facility.id), 2));
@@ -183,10 +196,11 @@ const Sim = (() => {
     const busy = [];
     for (let i = 0; i < Math.min(counts.inTreatment, facility.slots); i++) {
       busy.push(exponential(startRng, mean));
+      if (opts.trace) opts.trace.push({ label: `in-treatment-${i}`, endsAt: busy[i] });
     }
     let waiting = [];
     for (let i = 0; i < counts.waiting; i++) {
-      waiting.push({ emergency: false, treat: exponential(startRng, mean), probe: false });
+      waiting.push({ emergency: false, treat: exponential(startRng, mean), probe: false, label: `waiting-${i}` });
     }
 
     // Everyone who joins later, in arrival order. The probe sorts after others arriving the same minute.
@@ -198,6 +212,7 @@ const Sim = (() => {
         joiners.push({ t: p.arriveAt, emergency: false, treat, probe: false });
       }
     }
+    for (const x of opts.extra || []) joiners.push({ probe: false, ...x });
     joiners.sort((a, b) => a.t - b.t);
     const probe = { t: arriveAt, emergency: false, treat: mean, probe: true };
     let at = 0;
@@ -213,6 +228,7 @@ const Sim = (() => {
         let idx = waiting.findIndex((p) => p.emergency);
         if (idx < 0) idx = 0;
         const [p] = waiting.splice(idx, 1);
+        if (opts.trace && p.label) opts.trace.push({ label: p.label, startedAt: t });
         if (p.probe) return { wait: t - arriveAt, censored: false };
         busy.push(t + p.treat);
       }

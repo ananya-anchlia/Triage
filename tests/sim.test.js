@@ -70,10 +70,31 @@ test("closed facility returns null", () => {
   assert.ok(Sim.estimateWait(byId.ER_RAL, mk(21 * 60), 10));
 });
 
-test("CONSTANTS match PLAN starting values", () => {
+test("emergency is treated before waiting patients and never interrupts someone in treatment", () => {
+  // Never-open hours => no random arrivals, so the only patients are the ones we set up by hand.
+  const f = { id: "T", type: "er", hours: "00:00-00:00", slots: 1 };
+  const state = mk(960, { T: { waiting: 3, inTreatment: 1 } });
+  for (let run = 0; run < 50; run++) {
+    const trace = [];
+    // The probe arrives last (t=500) so it never matters; we read the trace instead.
+    Sim.runWait(f, state, 500, 7, run, {
+      extra: [{ t: 0, emergency: true, treat: 30, label: "emergency" }],
+      trace,
+    });
+    const inTx = trace.find((e) => e.label === "in-treatment-0");
+    const started = Object.fromEntries(trace.filter((e) => e.startedAt !== undefined).map((e) => [e.label, e.startedAt]));
+    for (const w of ["waiting-0", "waiting-1", "waiting-2"]) {
+      assert.ok(started.emergency < started[w], `run ${run}: emergency ${started.emergency} vs ${w} ${started[w]}`);
+    }
+    // Not interrupted: the one slot only frees when the in-treatment patient finishes.
+    assert.equal(started.emergency, Math.ceil(inTx.endsAt), `run ${run}: emergency started before in-treatment patient finished`);
+  }
+});
+
+test("CONSTANTS match PLAN starting values (ER arrivals recalibrated, see sim.js)", () => {
   const c = Sim.CONSTANTS;
-  assert.deepEqual(c.MINOR_ARRIVALS_PER_HOUR, { er: 9, urgent: 5, ortho: 3, peds: 4 });
-  assert.equal(c.EMERGENCY_ARRIVALS_PER_HOUR.er, 3);
+  assert.deepEqual(c.MINOR_ARRIVALS_PER_HOUR, { er: 3, urgent: 5, ortho: 3, peds: 4 });
+  assert.equal(c.EMERGENCY_ARRIVALS_PER_HOUR.er, 0.25);
   assert.equal(c.RUNS, 200); assert.equal(c.HORIZON_MIN, 180);
 });
 
