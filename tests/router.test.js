@@ -18,12 +18,15 @@ function test(name, fn) {
 const allNo = (type) => Object.fromEntries(checklists.types[type].map((id) => [id, "no"]));
 const base = { facilities, checklists, user: demo.user, state };
 
+// Each of these is one sign described with alternatives (e.g. "fingers or toes"), not two separate signs.
+const ONE_SIGN_WITH_ALTERNATIVES = ["numb", "cold", "blue", "cant_move", "burn_around", "burn_deep", "groin_numb"];
+
 test("checklist items are single questions with ids that exist", () => {
   for (const [type, ids] of Object.entries(checklists.types)) {
     for (const id of ids) {
       const text = checklists.items[id];
       assert.ok(text, `${type}: missing item ${id}`);
-      assert.ok(!/\b(or|and)\b/i.test(text), `"${text}" joins two signs`);
+      if (!ONE_SIGN_WITH_ALTERNATIVES.includes(id)) assert.ok(!/\b(or|and)\b/i.test(text), `"${text}" joins two signs`);
     }
   }
   assert.ok(checklists._status.includes("CLINICIAN REVIEW"));
@@ -117,6 +120,29 @@ test("ambulance questions: yes or not_sure to any switches the headline to Call 
   }
 });
 
+test("infants under 1 go to 'other' (ER or nurse line), even with a clean checklist", () => {
+  for (const age of [0, 0.5]) {
+    const r = Router.route({ ...base, injuryType: "cut", age, answers: allNo("cut") });
+    assert.equal(r.kind, "other", `age ${age}`);
+  }
+  assert.equal(Router.route({ ...base, injuryType: "cut", age: 1, answers: allNo("cut") }).kind, "results");
+});
+
+test("PLAN.md must-route cases: all no routes to options", () => {
+  const cases = [
+    ["bagel cut, bleeding stopped", "cut", 30],
+    ["sprained ankle at soccer", "sprain_or_simple_fracture", 30],
+    ["couch back strain", "back_strain", 30],
+    ["pan burn on a fingertip", "minor_burn", 30],
+    ["child wrist, fingers moving", "sprain_or_simple_fracture", 7],
+  ];
+  for (const [name, injuryType, age] of cases) {
+    const r = Router.route({ ...base, injuryType, age, answers: allNo(injuryType) });
+    assert.equal(r.kind, "results", name);
+    assert.ok(r.top.length > 0, name);
+  }
+});
+
 test("injury outside the types returns 'other', never a guess", () => {
   assert.equal(Router.route({ ...base, injuryType: "other", age: 30, answers: {} }).kind, "other");
   assert.equal(Router.route({ ...base, injuryType: "chest_pain", age: 30, answers: {} }).kind, "other");
@@ -174,7 +200,7 @@ test("age is required: blank, negative, non-numeric or absurd ages never route",
       assert.equal(r.reason, "age");
     }
   }
-  assert.equal(Router.route({ ...base, injuryType: "cut", age: 0, answers: allNo("cut") }).kind, "results");
+  assert.equal(Router.route({ ...base, injuryType: "cut", age: 1, answers: allNo("cut") }).kind, "results");
 });
 
 test("age rules: adults never see kids' clinics; ortho excludes under-5", () => {

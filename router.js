@@ -128,6 +128,7 @@ const Router = (() => {
     if (typeof age !== "number" || !Number.isFinite(age) || age < 0 || age > 120) {
       return { kind: "incomplete", reason: "age", missing: [] };
     }
+    if (age < 1) return { kind: "other" }; // infants: ER or nurse line, never a guess
     const child = isChild(age);
     const injuryType = input.injuryType === "other" && child ? "child_minor_injury" : input.injuryType;
     if (!INJURY_TYPES.includes(injuryType)) return { kind: "other" };
