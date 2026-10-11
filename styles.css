@@ -47,3 +47,26 @@ main { flex: 1; position: relative; min-height: 0; }
 
 .pin-label { font-weight: 600; }
 .pin-type { color: #555; text-transform: uppercase; font-size: 0.75rem; }
+
+/* Milestone 3: plain form and results. Frutiger Aero pass is milestone 7. */
+.panel { max-height: calc(100% - 24px); overflow-y: auto; width: 340px; }
+.panel label { display: block; margin: 8px 0; font-size: 0.9rem; }
+.panel select, .panel input[type=number] { display: block; width: 100%; padding: 4px; margin-top: 2px; }
+.note { color: #555; }
+.error { color: #b00; font-weight: 600; }
+fieldset.q { border: 0; border-top: 1px solid #ddd; margin: 0; padding: 6px 0; }
+fieldset.q legend { font-size: 0.9rem; padding: 0; }
+label.opt { display: inline-block; margin: 2px 10px 2px 0; }
+#find-care { font-size: 1.1rem; padding: 10px 16px; margin-top: 8px; width: 100%; }
+.results ol { padding-left: 20px; }
+.results li { margin-bottom: 12px; }
+.big { font-size: 1.5rem; font-weight: 700; }
+.small { font-size: 0.8rem; color: #555; }
+.badge { background: #0a7; color: #fff; border-radius: 10px; padding: 1px 8px; margin-left: 6px; font-size: 0.75rem; }
+.wording { font-weight: 600; }
+.emergency { background: #c00; color: #fff; margin: -12px -14px; padding: 14px; border-radius: 8px; }
+.emergency h2 { margin-top: 0; font-size: 1.6rem; }
+.call911 { display: block; background: #fff; color: #c00; text-align: center; font-weight: 800; font-size: 1.4rem; padding: 10px; border-radius: 6px; text-decoration: none; margin: 8px 0; }
+.emergency button { margin-top: 10px; }
+.dev { margin-top: 12px; font-size: 0.8rem; }
+.rank-tip { background: none; border: 0; box-shadow: none; font-weight: 800; color: #0a7; }

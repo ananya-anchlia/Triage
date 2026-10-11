@@ -47,8 +47,10 @@ tests/run.html           runs router + safety tests in the browser
    Never write "you don't need the ER" or any reassurance or diagnosis.
 6. Always visible: an "Emergency? Call 911" bar and "Demo network: simulated facilities and
    wait times." Facility names stay neutral (e.g. "Hospital A ER"), never real hospital names.
-7. Anything outside the five injury types (sprain_or_simple_fracture, cut, minor_burn,
-   back_strain, child minor injury) → "ER or your doctor's nurse line", never a guess.
+7. Anything outside the four injury types (sprain_or_simple_fracture, cut, minor_burn,
+   back_strain) → "ER or your doctor's nurse line", never a guess. Children are not a separate
+   type: age sets the child flag (under 18), which filters facilities by age and makes kids'
+   clinics "Best fit". `child_minor_injury` is used only for a child with no specified injury.
 
 ## Simulation rules
 

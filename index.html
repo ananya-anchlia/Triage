@@ -17,16 +17,43 @@
   <main>
     <div id="map" aria-label="Map of simulated Triangle facilities"></div>
 
-    <aside class="panel">
+    <aside class="panel" id="panel">
       <h1>Triage</h1>
-      <p>Milestone 1: map and Gemini connection check.</p>
-      <button id="test-gemini" type="button">Test Gemini</button>
-      <pre id="gemini-reply" aria-live="polite"></pre>
+
+      <form id="intake-form" novalidate>
+        <p class="note">Prototype safety checklist based on published ACEP guidance. Not a validated clinical tool.</p>
+        <label>Injury type
+          <select id="injury-type" required>
+            <option value="">Choose...</option>
+            <option value="sprain_or_simple_fracture">Sprain or possible simple fracture</option>
+            <option value="cut">Cut that may need stitches</option>
+            <option value="minor_burn">Minor burn</option>
+            <option value="back_strain">Back or muscle strain</option>
+            <option value="other">Something else</option>
+          </select>
+        </label>
+        <label>Age in years
+          <input id="age" type="number" min="0" max="120" step="1" required>
+        </label>
+        <div id="checklist"></div>
+        <button id="find-care" type="submit">Find care</button>
+        <p id="form-error" class="error" role="alert"></p>
+      </form>
+
+      <div id="result" aria-live="polite"></div>
+
+      <details class="dev">
+        <summary>Gemini connection check (temporary)</summary>
+        <button id="test-gemini" type="button">Test Gemini</button>
+        <pre id="gemini-reply" aria-live="polite"></pre>
+      </details>
     </aside>
   </main>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
           integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="sim.js"></script>
+  <script src="router.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

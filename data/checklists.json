@@ -1,0 +1,57 @@
+{
+  "_status": "PROTOTYPE DRAFT - NEEDS CLINICIAN REVIEW. Built from ACEP 'Is it an emergency?' warning signs plus the injury-specific checks in PLAN.md. Burn items and the pairing of items to injury types are the author's draft, not clinical guidance. Not a validated triage tool.",
+  "_rules": "One question per item: no 'or'/'and' joining two separate signs. Any 'yes' or 'not_sure' answer means emergency (decided in router.js, never by Gemini).",
+  "items": {
+    "breathing": "Is the person having trouble breathing?",
+    "passed_out": "Did the person pass out, even for a moment?",
+    "confused": "Is the person confused?",
+    "sleepy": "Is the person unusually sleepy?",
+    "head_hit": "Did the person hit their head?",
+    "bad_headache": "Does the person have a severe headache?",
+    "vomiting": "Has the person been vomiting?",
+    "bleeding": "Is there bleeding that will not stop with firm pressure?",
+    "bone_out": "Is a bone sticking out through the skin?",
+    "deformed": "Does the injured part look bent the wrong way?",
+    "numb": "Is the skin below the injury numb?",
+    "cold": "Is the skin below the injury cold?",
+    "blue": "Is the skin below the injury blue?",
+    "cant_move": "Is the part below the injury unable to move?",
+    "thinners": "Does the person take blood thinners?",
+    "cut_deep": "Is the cut deep?",
+    "cut_gaping": "Does the cut gape open?",
+    "burn_large": "Is the burn bigger than the person's palm?",
+    "burn_face": "Is the burn on the face?",
+    "burn_hands": "Is the burn on the hands?",
+    "burn_genitals": "Is the burn on the genitals?",
+    "burn_numb": "Does the burned spot feel numb?",
+    "burn_chemical": "Was the burn caused by a chemical?",
+    "burn_electric": "Was the burn caused by electricity?",
+    "smoke": "Did the person breathe in smoke?",
+    "leg_numb": "Are the legs numb?",
+    "leg_weak": "Are the legs weak?",
+    "bladder": "Has the person lost control of their bladder?",
+    "bowel": "Has the person lost control of their bowels?",
+    "severe_pain": "Is the pain severe?",
+    "chest_pain": "Does the person have chest pain?",
+    "blue_lips": "Are the child's lips blue?",
+    "cant_stand": "Is the child unable to stand?",
+    "wobbly": "Is the child walking unsteadily?"
+  },
+  "types": {
+    "sprain_or_simple_fracture": ["breathing", "passed_out", "head_hit", "sleepy", "bleeding", "bone_out", "deformed", "numb", "cold", "blue", "cant_move", "thinners"],
+    "cut": ["breathing", "passed_out", "bleeding", "cut_deep", "cut_gaping", "numb", "cant_move"],
+    "minor_burn": ["breathing", "passed_out", "burn_large", "burn_face", "burn_hands", "burn_genitals", "burn_numb", "burn_chemical", "burn_electric", "smoke"],
+    "back_strain": ["breathing", "passed_out", "head_hit", "thinners", "leg_numb", "leg_weak", "bladder", "bowel", "severe_pain", "chest_pain"],
+    "child_minor_injury": ["breathing", "passed_out", "confused", "sleepy", "head_hit", "bad_headache", "vomiting", "bleeding", "blue_lips", "cant_stand", "wobbly"]
+  },
+  "ambulance": {
+    "_note": "ACEP 'when to call an ambulance' questions. Yes or not sure to any: headline becomes 'Call 911'.",
+    "questions": {
+      "life_threatening": "Does this look life-threatening?",
+      "could_worsen": "Could it become life-threatening on the way?",
+      "moving_harm": "Could moving the person cause more injury?",
+      "paramedic": "Does the person need care that only paramedics can give?",
+      "too_far": "Would getting to the ER by car take too long?"
+    }
+  }
+}
